@@ -9,9 +9,9 @@ This Python script takes the polygons from a Shapefile, calculates the centerlin
 
 ###Usage:
 Before running the script open it and change the name of the input Shapefile (at the bottom of the script). After that, open the Terminal and type:
-'''
+```
 $ python centerline.py
-'''
+```
 
 ###Requirements:
 1. [Python 2.7+](https://www.python.org/download/releases/2.7/)
