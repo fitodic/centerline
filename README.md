@@ -1,5 +1,5 @@
 #polygon-centerline
-==================
+------------------
 ##Calculates the centerline of a polygon.
 
 Roads, rivers and similar linear structures are often represented by long and complex polygons. Since one of the most important attributes of a linear structure is its length, extracting that attribute from a polygon can prove to be more or less difficult.
