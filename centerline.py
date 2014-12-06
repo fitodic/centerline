@@ -8,20 +8,21 @@ import fiona
 
 class Centerline(object):
 
-	def __init__(self, inputSHP):
+	def __init__(self, inputSHP, dist = 0.5):
 		self.shp = inputSHP
+		self.dist = dist
 
 		print 'Importing Shapefile.'
-		self.dct_polygons = self.importSHP(self.shp)
+		self.dct_polygons = self.importSHP()
 
 		print 'Calculating centerlines.'
-		self.dct_centerlines = self.createCenterline(self.dct_polygons)
+		self.dct_centerlines = self.createCenterline()
 
 		print 'Exporting ceterlines to Shapefile.'
-		self.export2SHP(self.dct_centerlines)
+		self.export2SHP()
 
 
-	def createCenterline(self, dct):
+	def createCenterline(self):
 		"""
 		Calculates the centerline of a polygon.
 
@@ -34,11 +35,10 @@ class Centerline(object):
 			a union of lines that are located within the polygon.
 		"""
 		dct_clines = {}
-		for i, key in enumerate(dct.keys()):
-		#	set_trace()
-			polygon = dct[key][0]
-			minx = dct[key][1]
-			miny = dct[key][2]
+		for i, key in enumerate(self.dct_polygons.keys()):
+			polygon = self.dct_polygons[key][0]
+			minx = self.dct_polygons[key][1]
+			miny = self.dct_polygons[key][2]
 
 			border = np.array(self.densifyBorder(polygon, minx, miny))
 
@@ -60,7 +60,7 @@ class Centerline(object):
 		return dct_clines
 
 
-	def importSHP(self, shp):
+	def importSHP(self):
 		""" 
 		Imports the Shapefile into a dictionary.
 		
@@ -71,7 +71,7 @@ class Centerline(object):
 
 		dct = {}
 
-		with fiona.open(shp, 'r', encoding = 'UTF-8') as fileIN:
+		with fiona.open(self.shp, 'r', encoding = 'UTF-8') as fileIN:
 			for polygon in fileIN:
 				polygonID = polygon['properties'][u'id']
 				geom = shape(polygon['geometry'])
@@ -83,7 +83,7 @@ class Centerline(object):
 		return dct
 
 
-	def densifyBorder(self, polygon, minx, miny, dist = 0.5):
+	def densifyBorder(self, polygon, minx, miny):
 		"""
 		Densifies the border of a polygon by a given factor (by default: 0.5).
 
@@ -103,20 +103,20 @@ class Centerline(object):
 
 		if len(polygon.interiors) == 0:
 			exterIN = LineString(polygon.exterior)
-			points = self.fixedInterpolation(exterIN, minx, miny, dist)
+			points = self.fixedInterpolation(exterIN, minx, miny)
 		
 		else:
 			exterIN = LineString(polygon.exterior)
-			points = self.fixedInterpolation(exterIN, minx, miny, dist)
+			points = self.fixedInterpolation(exterIN, minx, miny)
 
 			for j in range(len(polygon.interiors)):
 				interIN = LineString(polygon.interiors[j])
-				points += self.fixedInterpolation(interIN, minx, miny, dist)
+				points += self.fixedInterpolation(interIN, minx, miny)
 
 		return points
 
 
-	def fixedInterpolation(self, line, minx, miny, dist):
+	def fixedInterpolation(self, line, minx, miny):
 		"""
 		A helping function which is used in densifying the border of a polygon.
 
@@ -134,7 +134,7 @@ class Centerline(object):
 			[[X1, Y1], [X2, Y2], ..., [Xn, Yn]
 		"""
 
-		count = dist
+		count = self.dist
 		newline = []
 
 		startpoint = [line.xy[0][0] - minx, line.xy[1][0] - miny]
@@ -144,14 +144,14 @@ class Centerline(object):
 		while count < line.length:
 			point = line.interpolate(count)
 			newline.append([point.x - minx, point.y - miny])
-			count += dist
+			count += self.dist
 
 		newline.append(endpoint)
 
 		return newline
 
 
-	def export2SHP(self, dct):
+	def export2SHP(self):
 		"""
 		Creates a Shapefile and fills it centerlines and their IDs.
 
@@ -165,8 +165,8 @@ class Centerline(object):
 		with fiona.open('centerlines.shp', 'w', encoding='UTF-8', \
 			schema = newschema, driver = 'ESRI Shapefile') as SHPfile:
 			
-			for i, key in enumerate(dct):
-				geom = dct[key]
+			for i, key in enumerate(self.dct_centerlines):
+				geom = self.dct_centerlines[key]
 				newline = {}
 
 				newline['geometry'] = mapping(geom)
@@ -176,4 +176,4 @@ class Centerline(object):
 
 
 if __name__ == "__main__":
-	Centerline('inputSHP.shp')
+	Centerline('inputSHP.shp', 0.5)

@@ -9,7 +9,7 @@ This Python script takes the polygons from a Shapefile, calculates the centerlin
 ------------------
 
 ###Usage:
-Before running the script open it and change the name of the input Shapefile (at the bottom of the script). After that, open the Terminal and type:
+Before running the script open it and change the name of the input Shapefile and/or the density factor (at the bottom of the script). After that, open the Terminal and type:
 ```
 $ python centerline.py
 ```
@@ -27,7 +27,7 @@ $ python centerline.py
 ------------------
 
 **Notes**:
-When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters).
+When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters). If needed, the factor can be changed at the end of the script. If the user doesn't define the value (next to the name of the input Shapefile), the script uses the default value.
 
 It appears that the Voronoi function available in the *SciPy* module does not handle large coordinates very well. Since most of the coordinates are large numbers, a bounding box is needed to calculate the minimal X and Y coordinates (bottom left corner). These values are then used for coordinate reduction. Once the Voronoi diagram is created the coordinates are returned to their non-reduced form before creating linestrings.
 
