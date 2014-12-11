@@ -4,22 +4,23 @@ from shapely.ops import unary_union
 from scipy.spatial import Voronoi
 import numpy as np
 import fiona
+import argparse
 
 
 class Centerline(object):
 
-	def __init__(self, inputSHP, dist = 0.5):
-		self.shp = inputSHP
-		self.dist = dist
+	def __init__(self, inputSHP, outputSHP, dist = 0.5):
+		self.inshp = inputSHP
+		self.outshp = outputSHP
+		self.dist = abs(dist)
 
-		print 'Importing Shapefile.'
+		print 'Importing polygons from: ' + self.inshp
 		self.dct_polygons = self.importSHP()
-
 		print 'Calculating centerlines.'
 		self.dct_centerlines = self.createCenterline()
-
-		print 'Exporting ceterlines to Shapefile.'
+		print 'Exporting centerlines to: ' + self.outshp
 		self.export2SHP()
+		print 'Calculation complete.'
 
 
 	def createCenterline(self):
@@ -35,6 +36,7 @@ class Centerline(object):
 			a union of lines that are located within the polygon.
 		"""
 		dct_clines = {}
+
 		for i, key in enumerate(self.dct_polygons.keys()):
 			polygon = self.dct_polygons[key][0]
 			minx = self.dct_polygons[key][1]
@@ -71,7 +73,7 @@ class Centerline(object):
 
 		dct = {}
 
-		with fiona.open(self.shp, 'r', encoding = 'UTF-8') as fileIN:
+		with fiona.open(self.inshp, 'r', encoding = 'UTF-8') as fileIN:
 			for polygon in fileIN:
 				polygonID = polygon['properties'][u'id']
 				geom = shape(polygon['geometry'])
@@ -153,22 +155,25 @@ class Centerline(object):
 
 	def export2SHP(self):
 		"""
-		Creates a Shapefile and fills it centerlines and their IDs.
+		Creates a Shapefile and fills it with centerlines and their IDs.
 
 		The dictionary contains the IDs of the centerlines (keys) and their 
 		geometries (values). The ID of a centerline is the same as the ID of 
 		the polygon it represents.
 		"""
 
-		newschema = {'geometry': 'MultiLineString', 'properties': {'id': 'int'}}
+		newschema = {'geometry': 'MultiLineString', 
+					'id': 'int', 
+					'properties': {'id': 'int'}}
 
-		with fiona.open('centerlines.shp', 'w', encoding='UTF-8', \
+		with fiona.open(self.outshp, 'w', encoding='UTF-8', \
 			schema = newschema, driver = 'ESRI Shapefile') as SHPfile:
 			
 			for i, key in enumerate(self.dct_centerlines):
 				geom = self.dct_centerlines[key]
 				newline = {}
 
+				newline['id'] = key
 				newline['geometry'] = mapping(geom)
 				newline['properties'] = {'id': key}
 
@@ -176,4 +181,12 @@ class Centerline(object):
 
 
 if __name__ == "__main__":
-	Centerline('inputSHP.shp', 0.5)
+	parser = argparse.ArgumentParser(description = 'Calculate the centerline of a polygon')
+
+	parser.add_argument('SRC', type = str, help = 'Name of the input Shapefile')
+	parser.add_argument('DEST', type = str, help = 'Name of the output Shapefile')
+	parser.add_argument('DINTER', type = float, nargs = '?', default = 0.5, 
+						help = 'Factor of interpolation (by default: 0.5)')
+	args = parser.parse_args()
+
+	Centerline(args.SRC, args.DEST, args.DINTER)
