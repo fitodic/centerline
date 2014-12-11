@@ -9,7 +9,7 @@ import argparse
 
 class Centerline(object):
 
-	def __init__(self, inputSHP, outputSHP, dist = 0.5):
+	def __init__(self, inputSHP, outputSHP, dist):
 		self.inshp = inputSHP
 		self.outshp = outputSHP
 		self.dist = abs(dist)
