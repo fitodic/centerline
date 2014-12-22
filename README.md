@@ -11,12 +11,14 @@ This Python script takes the polygons from a Shapefile, calculates the centerlin
 ###Usage:
 In order to calculate the centerlines from the polygons saved within a Shapefile, open the Terminal and type:
 ```
-$ python centerline.py INPUT_SHP OUTPUT_SHP INTERPOLATION_DISTANCE
+$ python shp2centerline.py INPUT_SHP OUTPUT_SHP INTERPOLATION_DISTANCE
 ```
 The INTERPOLATION_DISTANCE parameter is optional. If not specified, the default value is 0.5. For more information type:
 ```
-$ python centerline.py -h
+$ python shp2centerline.py -h
 ```
+**Important**:
+INPUT_SHP file has to have one column called **id** which has unique values or script will fail to execute successfully.
 
 ###Requirements:
 1. [Python 2.7+](https://www.python.org/download/releases/2.7/)
