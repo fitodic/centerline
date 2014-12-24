@@ -39,7 +39,7 @@ class Centerline(object):
 					(vertex[ridge[0]][0] + minx, vertex[ridge[0]][1] + miny), \
 					(vertex[ridge[1]][0] + minx, vertex[ridge[1]][1] + miny)])
 
-				if line.within(self.inputGEOM):
+				if line.within(self.inputGEOM) and len(line.coords[0]) > 1:
 					lst_lines.append(line)
 
 		return unary_union(lst_lines)

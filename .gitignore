@@ -24,6 +24,7 @@ var/
 bin/
 include/
 local/
+share/
 shapely/
 
 # PyInstaller
