@@ -11,6 +11,7 @@ class Centerline(object):
 		self.inputGEOM = inputGEOM
 		self.dist = abs(dist)
 
+
 	def createCenterline(self):
 		"""
 		Calculates the centerline of a polygon.
@@ -110,6 +111,3 @@ class Centerline(object):
 		newline.append(endpoint)
 
 		return newline
-
-
-

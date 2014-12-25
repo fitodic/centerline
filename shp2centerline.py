@@ -25,18 +25,23 @@ class Shp2centerline(object):
 
     def run(self):
         """
-        Starts processing of the imported SHP file.
-
+        Starts processing the imported SHP file. 
+        It sedns the polygon's geometry allong with the interpolation distance
+        to the Centerline class to create a Centerline object.
+        The results (the polygon's ID and the geometry of the centerline) are
+        added to the dictionary.
         """
-        for k in self.dct_polygons.keys():
-            poly_geom = self.dct_polygons[k]
+
+        for key in self.dct_polygons.keys():
+            poly_geom = self.dct_polygons[key]
             centerlineObj = Centerline(poly_geom,self.dist)
-            self.dct_centerlines[k] = centerlineObj.createCenterline()
+
+            self.dct_centerlines[key] = centerlineObj.createCenterline()
 
 
     def importSHP(self):
         """
-        Imports the Shapefile into a dictionary. Shapefile has to have ID
+        Imports the Shapefile into a dictionary. Shapefile needs to have an ID
         column with unique values.
 
         Returns:
@@ -78,13 +83,15 @@ class Shp2centerline(object):
 
                 SHPfile.write(newline)
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = 'Calculate the centerline of a polygon')
+    parser = argparse.ArgumentParser(description = 'Calculate the centerline\
+         of a polygon')
 
     parser.add_argument('SRC', type = str, help = 'Name of the input Shapefile')
     parser.add_argument('DEST', type = str, help = 'Name of the output Shapefile')
-    parser.add_argument('DINTER', type = float, nargs = '?', default = 0.5,
-                        help = 'Factor of interpolation (by default: 0.5)')
+    parser.add_argument('BORDENS', type = float, nargs = '?', default = 0.5,
+        help = 'The density of the border (by default: 0.5)')
     args = parser.parse_args()
 
-    Shp2centerline(args.SRC, args.DEST, args.DINTER)
+    Shp2centerline(args.SRC, args.DEST, args.BORDENS)

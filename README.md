@@ -4,21 +4,21 @@
 
 Roads, rivers and similar linear structures are often represented by long and complex polygons. Since one of the most important attributes of a linear structure is its length, extracting that attribute from a polygon can prove to be more or less difficult.
 
-This Python script takes the polygons from a Shapefile, calculates the centerline of each polygon and exports the into a separate Shapefile.
+There are two Python scripts. The first one, *centerline.py* handles the basic computations and can be used as a stand-alone script. The second one, *shp2centerline.py* has a more specific nature. The input is a Shapefile that contains polygons. It takes each polygon and calculates its centerline by calling the *centerline.py*. The output is also a Shapefile which contains MultiLineStrings.
 
 ------------------
 
 ###Usage:
-In order to calculate the centerlines from the polygons saved within a Shapefile, open the Terminal and type:
+In order to calculate the centerlines from the polygons saved within a Shapefile, open the Terminal (Ctrl + Alt + T) and type:
 ```
-$ python shp2centerline.py INPUT_SHP OUTPUT_SHP INTERPOLATION_DISTANCE
+$ python shp2centerline.py INPUT_SHP OUTPUT_SHP BORDER_DENSITY
 ```
-The INTERPOLATION_DISTANCE parameter is optional. If not specified, the default value is 0.5. For more information type:
+The BORDER_DENSITY parameter is optional. If not specified, the default value is 0.5. For more information type:
 ```
 $ python shp2centerline.py -h
 ```
-**Important**:
-INPUT_SHP file has to have one column called **id** which has unique values or script will fail to execute successfully.
+**Warning**:
+The INPUT_SHP file needs to have a column called **id** with unique values or the script will fail to execute successfully.
 
 ###Requirements:
 1. [Python 2.7+](https://www.python.org/download/releases/2.7/)
@@ -34,7 +34,7 @@ INPUT_SHP file has to have one column called **id** which has unique values or s
 ------------------
 
 **Notes**:
-When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters). If the user doesn't define the value (see *Usage*), the script uses the default value. If the value is a negative number, it will be converted into a positive number.
+When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters). For instance, if the value is set to 0.5 m, it basically places additional points on the border at the distance of 0.5 m from each other. If the user doesn't define the value (see *Usage*), the script uses the default value. If the value is a negative number, it will be converted into a positive number. 
 
 It appears that the Voronoi function available in the *SciPy* module does not handle large coordinates very well. Since most of the coordinates are large numbers, a bounding box is needed to determine the minimal X and Y coordinates, i.e. the bottom left corner of the bounding box. These values are then used for coordinate reduction. Once the Voronoi diagram is created the coordinates are returned to their non-reduced form before creating linestrings.
 
