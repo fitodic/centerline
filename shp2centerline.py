@@ -22,10 +22,9 @@ class Shp2centerline(object):
         self.export2SHP()
         print 'Calculation complete.'
 
-
     def run(self):
         """
-        Starts processing the imported SHP file. 
+        Starts processing the imported SHP file.
         It sedns the polygon's geometry allong with the interpolation distance
         to the Centerline class to create a Centerline object.
         The results (the polygon's ID and the geometry of the centerline) are
@@ -34,10 +33,9 @@ class Shp2centerline(object):
 
         for key in self.dct_polygons.keys():
             poly_geom = self.dct_polygons[key]
-            centerlineObj = Centerline(poly_geom,self.dist)
+            centerlineObj = Centerline(poly_geom, self.dist)
 
             self.dct_centerlines[key] = centerlineObj.createCenterline()
-
 
     def importSHP(self):
         """
@@ -49,13 +47,12 @@ class Shp2centerline(object):
             geometry.
         """
 
-        with fiona.open(self.inshp, 'r', encoding = 'UTF-8') as fileIN:
+        with fiona.open(self.inshp, 'r', encoding='UTF-8') as fileIN:
             for polygon in fileIN:
                 polygonID = polygon['properties'][u'id']
                 geom = shape(polygon['geometry'])
 
                 self.dct_polygons[polygonID] = geom
-
 
     def export2SHP(self):
         """
@@ -67,11 +64,11 @@ class Shp2centerline(object):
         """
 
         newschema = {'geometry': 'MultiLineString',
-                    'id': 'int',
-                    'properties': {'id': 'int'}}
+                     'id': 'int',
+                     'properties': {'id': 'int'}}
 
-        with fiona.open(self.outshp, 'w', encoding='UTF-8', \
-            schema = newschema, driver = 'ESRI Shapefile') as SHPfile:
+        with fiona.open(self.outshp, 'w', encoding='UTF-8',
+                        schema=newschema, driver='ESRI Shapefile') as SHPfile:
 
             for i, key in enumerate(self.dct_centerlines):
                 geom = self.dct_centerlines[key]
@@ -85,13 +82,13 @@ class Shp2centerline(object):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = 'Calculate the centerline\
+    parser = argparse.ArgumentParser(description='Calculate the centerline\
          of a polygon')
 
-    parser.add_argument('SRC', type = str, help = 'Name of the input Shapefile')
-    parser.add_argument('DEST', type = str, help = 'Name of the output Shapefile')
-    parser.add_argument('BORDENS', type = float, nargs = '?', default = 0.5,
-        help = 'The density of the border (by default: 0.5)')
+    parser.add_argument('SRC', type=str, help='Name of the input Shapefile')
+    parser.add_argument('DEST', type=str, help='Name of the output Shapefile')
+    parser.add_argument('BORDENS', type=float, nargs='?', default=0.5,
+                        help='The density of the border (by default: 0.5)')
     args = parser.parse_args()
 
     Shp2centerline(args.SRC, args.DEST, args.BORDENS)
