@@ -1,10 +1,8 @@
-Fiona==1.5.1
-GDAL==1.11.2
-Shapely==1.5.9
-argparse==1.2.1
-click==4.0
-cligj==0.2.0
-numpy==1.9.2
-scipy==0.15.1
+click==6.2
+click-plugins==1.0.3
+cligj==0.4.0
+Fiona==1.6.3
+numpy==1.10.4
+scipy==0.16.1
+Shapely==1.5.13
 six==1.9.0
-wsgiref==0.1.2
