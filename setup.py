@@ -16,7 +16,7 @@ setup(name='centerline',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
         'Intended Audience :: Science/Research',
-        'Topic :: Scientific/Engineering :: GIS',
+        'Topic :: Scientific/Engineering :: GIS'
       ],
       url='https://github.com/fitodic/centerline.git',
       author='Filip Todic',
