@@ -1,4 +1,4 @@
-include README.rst
-include LICENCE
+include README.md
+include LICENSE
 include Screenshot.png
 include requirements.txt
