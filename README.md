@@ -1,42 +1,50 @@
-#polygon-centerline
-------------------
-##Calculates the centerline of a polygon.
+# Centerline
+
+## Calculate the centerline of a polygon.
 
 Roads, rivers and similar linear structures are often represented by long and complex polygons. Since one of the most important attributes of a linear structure is its length, extracting that attribute from a polygon can prove to be more or less difficult.
 
-There are two Python scripts. The first one, *centerline.py* handles the basic computations and can be used as a stand-alone script. The second one, *shp2centerline.py* has a more specific nature. The input is a Shapefile that contains polygons. It takes each polygon and calculates its centerline by calling the *centerline.py*. The output is also a Shapefile which contains MultiLineStrings.
+### Installation:
 
-------------------
+You can download the package from PyPI:
+```
+$ pip install centerline
+```
+**Warning:**
+This package has several dependencies, including Numpy, [Scipy](http://www.scipy.org/install.html) and [GDAL/OGR](https://pypi.python.org/pypi/GDAL/). If you are installing these packages in the virtual environement, make sure you have all the necessary dependencies on your system. Furthermore, after installing GDAL locate the GDAL headers:
+```
+$ whereis gdal
+gdal: /usr/include/gdal /usr/share/gdal
+```
+and set the include path using the following environment variables:
+```
+$ export CPLUS_INCLUDE_PATH=/usr/include/gdal/
+$ export C_INCLUDE_PATH=/usr/include/gdal/
+```
+After that, you can proceed to installing GDAL in the virtual environment.
+For more info, visit [Stack Exchange](http://gis.stackexchange.com/questions/28966/python-gdal-package-missing-header-file-when-installing-via-pip).
 
-###Usage:
-In order to calculate the centerlines from the polygons saved within a Shapefile, open the Terminal (Ctrl + Alt + T) and type:
+### Usage:
+If you are planning on using this package inside of your own code, just type:
+```python
+>>> from centerline import Centerline
 ```
-$ python shp2centerline.py INPUT_SHP OUTPUT_SHP BORDER_DENSITY
+However, if you just want to convert a Shapefile full of polygons into a Shapefile full of centerlines, use the command line tool:
 ```
-The BORDER_DENSITY parameter is optional. If not specified, the default value is 0.5. For more information type:
+$ shp2centerline INPUT_PATH.shp OUTPUT_PATH.shp [BORDER_DENSITY]
 ```
-$ python shp2centerline.py -h
-```
-**Warning**:
-The INPUT_SHP file needs to have a column called **id** with unique values or the script will fail to execute successfully.
+The BORDER_DENSITY parameter is optional. If not specified, the default value is 0.5.
 
-###Requirements:
-1. [Python 2.7+](https://www.python.org/download/releases/2.7/)
-2. [Shapely](https://pypi.python.org/pypi/Shapely)
-3. [SciPy](http://www.scipy.org/)
-4. [Fiona](https://pypi.python.org/pypi/Fiona/)
-5. [Numpy](http://www.scipy.org/)
-6. [ArgParse](https://docs.python.org/2.7/library/argparse.html)
+**Warning:**
+The INPUT_PATH.shp file needs to have a column called **id** with unique values or the script will fail to execute successfully.
 
-###References:
+### References:
 * [SciPy-Voronoi](http://docs.scipy.org/doc/scipy/reference/tutorial/spatial.html#voronoi-diagrams)
 
-------------------
-
 **Notes**:
-When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters). For instance, if the value is set to 0.5 m, it basically places additional points on the border at the distance of 0.5 m from each other. If the user doesn't define the value (see *Usage*), the script uses the default value. If the value is a negative number, it will be converted into a positive number. 
+When defining the density factor, one has to take into account the coordinate system defined in the Shapefile. The script was designed to handle metric coordinate systems, so the density factor is by default 0.5 (meters). For instance, if the value is set to 0.5 m, it basically places additional points on the border at the distance of 0.5 m from each other. If the user doesn't define the value (see *Usage*), the script uses the default value. If the value is a negative number, it will be converted into a positive number.
 
-It appears that the Voronoi function available in the *SciPy* module does not handle large coordinates very well. Since most of the coordinates are large numbers, a bounding box is needed to determine the minimal X and Y coordinates, i.e. the bottom left corner of the bounding box. These values are then used for coordinate reduction. Once the Voronoi diagram is created the coordinates are returned to their non-reduced form before creating linestrings.
+It appears that the Voronoi function available in the *SciPy* module does not handle large coordinates very well. Since most of the coordinates are large numbers, a bounding box is needed to determine the minimal X and Y coordinates, i.e. the bottom left corner of the bounding box. These values are then used for coordinate reduction. Once the Voronoi diagram is created the coordinates are returned to their non-reduced form before creating LineStrings.
 
 **Example**
 ![Screenshot](Screenshot.png)
