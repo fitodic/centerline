@@ -1,4 +1,9 @@
-include README.md
 include LICENSE
-include Screenshot.png
+include MANIFEST.in
+include README.md
 include requirements.txt
+include Screenshot.png
+
+recursive-include bin
+recursive-include centerline
+recursive-include requirements
