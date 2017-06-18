@@ -49,20 +49,8 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
-
-#Sublime project
-project.sublime-project
-project.sublime-workspace
-
-#Other
-*~
-data/
-*.pyc

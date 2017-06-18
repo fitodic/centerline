@@ -1,0 +1,5 @@
+-r testing.txt
+
+autopep8
+flake8
+ipdb
