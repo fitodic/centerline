@@ -3,9 +3,11 @@ include README.md
 include requirements.txt
 include Screenshot.png
 
-recursive-include bin
-recursive-include centerline
-recursive-include requirements
+recursive-include bin *
+recursive-include centerline *
+recursive-include requirements *
+recursive-include scripts *
 
 exclude MANIFEST.in
 global-exclude *.pyc
+recursive-exclude tests *
