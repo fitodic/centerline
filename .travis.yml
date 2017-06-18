@@ -32,24 +32,21 @@ python:
   - "2.7"
   - "3.6"
 before_install:
-  - "pip install -U pip"
-  - "pip install wheel coveralls>=1.1 --upgrade"
-  - pip install setuptools==36.0.1
-  - pip install wheel
+  - "pip install -U pip setuptools wheel coveralls"
   - . ./scripts/travis_gdal_install.sh
   - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
   - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
   - export GDAL_DATA=$GDALINST/gdal-$GDALVERSION/share/gdal
   - export PROJ_LIB=/usr/share/proj
+  - "whereis gdal"
   - export CPLUS_INCLUDE_PATH=/usr/include/gdal
   - export C_INCLUDE_PATH=/usr/include/gdal
   - gdal-config --version
 install:
-  - "pip install -r requirements/testing.txt"
   - "if [ $(gdal-config --version) == \"$GDALVERSION\" ]; then echo \"Using gdal $GDALVERSION\"; else echo \"NOT using gdal $GDALVERSION as expected; aborting\"; exit 1; fi"
-  - "pip install --upgrade --force-reinstall --global-option=build_ext --global-option='-I$GDALINST/gdal-$GDALVERSION/include' --global-option='-L$GDALINST/gdal-$GDALVERSION/lib' --global-option='-R$GDALINST/gdal-$GDALVERSION/lib' -e ."
+  - "pip install GDAL==$GDALVERSION"
   - "pip install -e .[test]"
 script:
   - pytest
 after_success:
-  - coveralls || echo "!! intermittent coveralls failure"
+  - coveralls
