@@ -1,5 +1,5 @@
 Fiona>=1.6.3
-GDAL>=2.0.1
+GDAL>=1.9.2
 numpy>=1.10.4
 scipy>=0.16.1
 Shapely>=1.5.13
