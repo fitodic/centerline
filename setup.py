@@ -38,6 +38,20 @@ setup(
         'numpy>=1.10.4',
         'scipy>=0.16.1',
     ],
+    extras_require={
+        'dev': [
+            'pypandoc',
+            'ipdb',
+        ],
+        'test': [
+            'coverage',
+            'pytest',
+            'pytest-cov',
+            'pytest-sugar',
+            'pytest-runner',
+            'tox'
+        ],
+    },
     scripts=[
         'bin/shp2centerline',
     ],
