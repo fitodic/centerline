@@ -1,6 +1,16 @@
 Centerline
 ==========
 
+.. image:: https://travis-ci.org/fitodic/centerline.svg?branch=master
+    :target: https://travis-ci.org/fitodic/centerline
+
+.. image:: https://coveralls.io/repos/github/fitodic/centerline/badge.svg?branch=master
+    :target: https://coveralls.io/github/fitodic/centerline?branch=master
+
+.. image:: https://img.shields.io/pypi/v/centerline.svg
+    :target: https://pypi.python.org/pypi/centerline
+    :alt: Version
+
 Calculate the centerline of a polygon.
 --------------------------------------
 
