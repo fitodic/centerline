@@ -31,7 +31,7 @@ setup(
         ],
         'test': [
             'coverage',
-            'pytest',
+            'pytest>=3.0.0',
             'pytest-cov',
             'pytest-sugar',
             'pytest-runner',
