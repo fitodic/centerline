@@ -18,7 +18,7 @@ setup(
     license='MIT',
     packages=['centerline'],
     install_requires=[
-        'GDAL>=1.9.2',
+        'GDAL>=1.11.2',
         'Fiona>=1.6.3',
         'Shapely>=1.5.13',
         'numpy>=1.10.4',

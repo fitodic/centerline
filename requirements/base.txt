@@ -1,4 +1,4 @@
-GDAL>=1.9.2
+GDAL>=1.11.2
 Fiona>=1.6.3
 numpy>=1.10.4
 scipy>=0.16.1
