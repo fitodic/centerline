@@ -3,7 +3,7 @@ from setuptools import setup
 try:
     from pypandoc import convert
 
-    def read_md():
+    def read_md(markdown_file):
         return lambda f: convert(f, 'rst')
 
 except ImportError:
@@ -11,7 +11,7 @@ except ImportError:
         "warning: pypandoc module not found, could not convert Markdown to RST"
     )
 
-    def read_md():
+    def read_md(markdown_file):
         return lambda f: open(f, 'r').read()
 
 setup(
