@@ -26,7 +26,8 @@ setup(
     ],
     extras_require={
         'dev': [
-            'pypandoc',
+            'autopep8',
+            'flake8',
             'ipdb',
         ],
         'test': [

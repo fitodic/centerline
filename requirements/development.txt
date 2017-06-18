@@ -1,4 +1,5 @@
 -r testing.txt
 
+autopep8
+flake8
 ipdb
-pypandoc>=1.1.2
