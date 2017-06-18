@@ -1,10 +1,19 @@
 from setuptools import setup
+from codecs import open
+from os import path
+
+
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the relevant file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='centerline',
-    version='0.2',
+    version='0.2.1',
     description='Calculate the centerline of a polygon',
-    long_description='README.rst',
+    long_description=long_description,
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
