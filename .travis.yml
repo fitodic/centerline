@@ -48,6 +48,6 @@ install:
   - "pip install GDAL==$GDALVERSION"
   - "pip install -e .[test]"
 script:
-  - pytest
+  - "pytest"
 after_success:
   - coveralls
