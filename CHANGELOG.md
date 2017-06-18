@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - `CHANGELOG.md`
 - `.coveragerc`
+- Travis CI configuration
 - Test and package configuration in `setup.cfg`
 - Use `pytest` for test execution
 - Test the import of the `Centerline` class
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `.gitignore`
 - Reorganize the project's requirements (both in `*.txt` files and `setup.py`)
 - Fix PEP8 errors in `setup.py`
+- Convert README from MarkDown to ReStructuredText
 
 ## 0.1 - 2016-01-15
 
