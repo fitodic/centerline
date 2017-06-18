@@ -12,30 +12,28 @@ polygon can prove to be more or less difficult.
 Installation:
 ~~~~~~~~~~~~~
 
-You can download the package from PyPI::
+You can download the package from PyPI:
+
+.. code:: bash
 
     $ pip install centerline
 
-.. note::
-    This package has several dependencies, including Numpy,
+.. note:: This package has several dependencies, including Numpy,
     `Scipy <http://www.scipy.org/install.html>`__ and
     `GDAL/OGR <https://pypi.python.org/pypi/GDAL/>`__.
 
-.. tip::
+.. tip:: If you are installing these packages in the virtual environement,
+    make sure you have all the necessary dependencies on your system.
+    Furthermore, after installing GDAL locate the GDAL headers:
 
-    If you are installing
-    these packages in the virtual environement, make sure you have all the
-    necessary dependencies on your system. Furthermore, after installing
-    GDAL locate the GDAL headers:
-
-    ::
+    .. code:: bash
 
         $ whereis gdal
         gdal: /usr/include/gdal /usr/share/gdal
 
     and set the include path using the following environment variables:
 
-    ::
+    .. code:: bash
 
         $ export CPLUS_INCLUDE_PATH=/usr/include/gdal/
         $ export C_INCLUDE_PATH=/usr/include/gdal/
@@ -57,7 +55,7 @@ type:
 However, if you just want to convert a Shapefile full of polygons into a
 Shapefile full of centerlines, use the command line tool:
 
-::
+.. code:: bash
 
     $ shp2centerline INPUT_PATH.shp OUTPUT_PATH.shp [BORDER_DENSITY]
 
@@ -73,9 +71,7 @@ References:
 
 -  `SciPy-Voronoi <http://docs.scipy.org/doc/scipy/reference/tutorial/spatial.html#voronoi-diagrams>`__
 
-.. note::
-
-    When defining the density factor, one has to take into
+.. note:: When defining the density factor, one has to take into
     account the coordinate system defined in the Shapefile. The script was
     designed to handle metric coordinate systems, so the density factor is
     by default 0.5 (meters). For instance, if the value is set to 0.5 m, it
