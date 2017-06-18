@@ -1,0 +1,9 @@
+-r base.txt
+
+coverage
+
+pytest
+pytest-cov
+pytest-sugar
+
+tox

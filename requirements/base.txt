@@ -1,0 +1,6 @@
+Fiona>=1.6.3
+GDAL>=2.0.1
+numpy>=1.10.4
+pypandoc==1.1.2
+scipy>=0.16.1
+Shapely>=1.5.13

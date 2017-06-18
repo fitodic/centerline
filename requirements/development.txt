@@ -1,0 +1,3 @@
+-r testing.txt
+
+pypandoc>=1.1.2
