@@ -1,24 +1,10 @@
 from setuptools import setup
 
-try:
-    from pypandoc import convert
-
-    def read_md(markdown_file):
-        return lambda f: convert(f, 'rst')
-
-except ImportError:
-    print(
-        "warning: pypandoc module not found, could not convert Markdown to RST"
-    )
-
-    def read_md(markdown_file):
-        return lambda f: open(f, 'r').read()
-
 setup(
     name='centerline',
     version='0.1',
     description='Calculate the centerline of a polygon',
-    long_description=read_md('README.md'),
+    long_description='README.rst',
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
