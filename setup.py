@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='centerline',
-    version='0.1',
+    version='0.2',
     description='Calculate the centerline of a polygon',
     long_description='README.rst',
     classifiers=[
