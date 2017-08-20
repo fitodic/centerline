@@ -2,6 +2,8 @@
 # https://github.com/Toblerity/Shapely/blob/master/.travis.yml
 language: python
 sudo: false
+notifications:
+    email: false
 cache:
   directories:
     - $GDALINST
