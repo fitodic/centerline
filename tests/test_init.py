@@ -4,9 +4,12 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
+from centerline.centerline import Centerline as BaseCenterline
+
 
 class TestInit(TestCase):
 
     def test_centerline_import__import_successful(self):
         """ImportError should not be raised!"""
         from centerline import Centerline
+        self.assertEqual(Centerline, BaseCenterline)
