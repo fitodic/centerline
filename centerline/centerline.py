@@ -80,11 +80,12 @@ class Centerline(object):
         """
         A helping function which is used in densifying the border of a polygon.
 
-        It places points on the border at the specified distance. By default the
-        distance is 0.5 (meters) which means that the first point will be placed
-        0.5 m from the starting point, the second point will be placed at the
-        distance of 1.0 m from the first point, etc. Naturally, the loop breaks
-        when the summarized distance exceeds the length of the line.
+        It places points on the border at the specified distance. By default
+        the distance is 0.5 (meters) which means that the first point will be
+        placed 0.5 m from the starting point, the second point will be placed
+        at the distance of 1.0 m from the first point, etc. Naturally, the
+        loop breaks when the summarized distance exceeds the length of the
+        line.
 
         Returns:
             a list of points where each point is represented by a list of its
