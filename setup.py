@@ -38,6 +38,9 @@ setup(
             'autopep8',
             'flake8',
             'ipdb',
+            'ipython[all]',
+            'notebook',
+            'jupyter'
         ],
         'test': [
             'coverage',
