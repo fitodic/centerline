@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from centerline.centerline import Centerline as BaseCenterline
+from centerline.main import Centerline as BaseCenterline
 
 
 class TestInit(TestCase):

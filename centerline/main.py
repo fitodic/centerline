@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
+import numpy as np
+from scipy.spatial import Voronoi
 from shapely.geometry import LineString
 from shapely.ops import unary_union
-from scipy.spatial import Voronoi
-import numpy as np
 
 
 class Centerline(object):

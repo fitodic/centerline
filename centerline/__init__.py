@@ -3,6 +3,6 @@
 from __future__ import unicode_literals
 
 from . import utils
-from .centerline import Centerline
+from .main import Centerline
 
 __all__ = ['utils', 'Centerline']
