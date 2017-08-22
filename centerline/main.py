@@ -1,5 +1,8 @@
-# -*- encoding: utf-8 -*-
-import numpy as np
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
+from numpy import array
 from scipy.spatial import Voronoi
 from shapely.geometry import LineString
 from shapely.ops import unary_union
@@ -7,9 +10,12 @@ from shapely.ops import unary_union
 
 class Centerline(object):
 
-    def __init__(self, inputGEOM, dist=0.5):
-        self.inputGEOM = inputGEOM
+    def __init__(self, input_geom, dist=0.5):
+        self.input_geom = input_geom
         self.dist = abs(dist)
+
+        self.minx = int(min(self.input_geom.envelope.exterior.xy[0]))
+        self.miny = int(min(self.input_geom.envelope.exterior.xy[1]))
 
     def createCenterline(self):
         """
@@ -24,10 +30,7 @@ class Centerline(object):
             a union of lines that are located within the polygon.
         """
 
-        minx = int(min(self.inputGEOM.envelope.exterior.xy[0]))
-        miny = int(min(self.inputGEOM.envelope.exterior.xy[1]))
-
-        border = np.array(self.densifyBorder(self.inputGEOM, minx, miny))
+        border = array(self.densify_border())
 
         vor = Voronoi(border)
         vertex = vor.vertices
@@ -36,77 +39,77 @@ class Centerline(object):
         for j, ridge in enumerate(vor.ridge_vertices):
             if -1 not in ridge:
                 line = LineString([
-                    (vertex[ridge[0]][0] + minx, vertex[ridge[0]][1] + miny),
-                    (vertex[ridge[1]][0] + minx, vertex[ridge[1]][1] + miny)])
+                    (vertex[ridge[0]][0] + self.minx,
+                     vertex[ridge[0]][1] + self.miny),
+                    (vertex[ridge[1]][0] + self.minx,
+                     vertex[ridge[1]][1] + self.miny)])
 
-                if line.within(self.inputGEOM) and len(line.coords[0]) > 1:
+                if line.within(self.input_geom) and len(line.coords[0]) > 1:
                     lst_lines.append(line)
 
         return unary_union(lst_lines)
 
-    def densifyBorder(self, polygon, minx, miny):
-        """
-        Densifies the border of a polygon by a given factor (by default: 0.5).
+    def densify_border(self):
+        """Densify the border of a polygon.
 
-        The function tests the complexity of the polygons geometry, i.e. does
-        the polygon have holes or not. If the polygon doesn't have any holes,
-        its exterior is extracted and densified by a given factor. If the
-        polygon has holes, the boundary of each hole as well as its exterior is
-        extracted and densified by a given factor.
+        The border is densified  by a given factor (by default: 0.5).
+
+        The complexity of the polygon's geometry is evaluated in order
+        to densify the borders of its interior rings as well.
 
         Returns:
-            a list of points where each point is represented by a list of its
-            reduced coordinates.
+            {list}: a list of points where each point is represented by
+                a list of its reduced coordinates
+                (e.g. [[X1, Y1], [X2, Y2], ..., [Xn, Yn])
 
-        Example:
-            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
         """
 
-        if len(polygon.interiors) == 0:
-            exterIN = LineString(polygon.exterior)
-            points = self.fixedInterpolation(exterIN, minx, miny)
+        if len(self.input_geom.interiors) == 0:
+            exterIN = LineString(self.input_geom.exterior)
+            points = self.fixed_interpolation(exterIN)
 
         else:
-            exterIN = LineString(polygon.exterior)
-            points = self.fixedInterpolation(exterIN, minx, miny)
+            exterIN = LineString(self.input_geom.exterior)
+            points = self.fixed_interpolation(exterIN)
 
-            for j in range(len(polygon.interiors)):
-                interIN = LineString(polygon.interiors[j])
-                points += self.fixedInterpolation(interIN, minx, miny)
+            for j in range(len(self.input_geom.interiors)):
+                interIN = LineString(self.input_geom.interiors[j])
+                points += self.fixed_interpolation(interIN)
 
         return points
 
-    def fixedInterpolation(self, line, minx, miny):
-        """
-        A helping function which is used in densifying the border of a polygon.
+    def fixed_interpolation(self, line):
+        """Place additional points on the border at the specified distance.
 
-        It places points on the border at the specified distance. By default
-        the distance is 0.5 (meters) which means that the first point will be
-        placed 0.5 m from the starting point, the second point will be placed
-        at the distance of 1.0 m from the first point, etc. Naturally, the
-        loop breaks when the summarized distance exceeds the length of the
-        line.
+        By default the distance is 0.5 (meters) which means that the first
+        point will be placed 0.5 m from the starting point, the second
+        point will be placed at the distance of 1.0 m from the first
+        point, etc. The loop breaks when the summarized distance exceeds
+        the length of the line.
+
+        Args:
+            line {shapely.geometry.LineString}: object
 
         Returns:
-            a list of points where each point is represented by a list of its
-            reduced coordinates.
+            {list}: a list of points where each point is represented by
+                a list of its reduced coordinates
+                (e.g. [[X1, Y1], [X2, Y2], ..., [Xn, Yn])
 
-        Example:
-            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
         """
 
         count = self.dist
-        newline = []
 
-        startpoint = [line.xy[0][0] - minx, line.xy[1][0] - miny]
-        endpoint = [line.xy[0][-1] - minx, line.xy[1][-1] - miny]
-        newline.append(startpoint)
+        STARTPOINT = [line.xy[0][0] - self.minx, line.xy[1][0] - self.miny]
+        ENDPOINT = [line.xy[0][-1] - self.minx, line.xy[1][-1] - self.miny]
+
+        newline = []
+        newline.append(STARTPOINT)
 
         while count < line.length:
             point = line.interpolate(count)
-            newline.append([point.x - minx, point.y - miny])
+            newline.append([point.x - self.minx, point.y - self.miny])
             count += self.dist
 
-        newline.append(endpoint)
+        newline.append(ENDPOINT)
 
         return newline
