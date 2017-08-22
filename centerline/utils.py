@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import os
+
 from osgeo import gdal, ogr
 
 # Enable GDAL/OGR exceptions
@@ -36,3 +38,42 @@ def get_ogr_driver(file_extension):
             file_extension)
         raise ValueError(msg)
 
+
+def get_polygon_features(filepath):
+    """Get the Polygon or MultiPolygon features from the source file.
+
+    Args:
+        filepath {str}: path to the source file
+
+    Yields:
+        {osgeo.ogr.Feature}: a Polygon or a MultiPolygon feature
+
+    Raises:
+        {AttributeError}: invalid filepath
+        {ValueError}: no driver is found
+
+    """
+    filename, file_extension = os.path.splitext(filepath)
+
+    try:
+        driver = get_ogr_driver(file_extension=file_extension[1:])
+    except ValueError:
+        raise
+
+    datasource = driver.Open(filepath, 0)
+
+    try:
+        layer_count = datasource.GetLayerCount()
+    except AttributeError:
+        raise
+
+    for layer_idx in range(layer_count):
+        layer = datasource.GetLayerByIndex(layer_idx)
+        layer_geometry_type = layer.GetGeomType()
+
+        if (layer_geometry_type == ogr.wkbPolygon or
+                layer_geometry_type == ogr.wkbMultiPolygon):
+            feature = layer.GetNextFeature()
+            while feature is not None:
+                yield feature
+                feature = layer.GetNextFeature()
