@@ -1,7 +1,7 @@
-from setuptools import setup
 from codecs import open
 from os import path
 
+from setuptools import setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -27,7 +27,7 @@ setup(
     license='MIT',
     packages=['centerline'],
     install_requires=[
-        'GDAL>=1.11.2',
+        'GDAL>=2.0.1',
         'Fiona>=1.6.3',
         'Shapely>=1.5.13',
         'numpy>=1.10.4',
