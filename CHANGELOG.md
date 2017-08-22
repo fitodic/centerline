@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - `flake8` configuration
 - `flake8` checks in the Travis build
+- `utils` module
+
+### Removed
+
+- Support for `GDAL<=2.0.1`
+
 
 ## 0.2.1 - 2017-06-18
 
