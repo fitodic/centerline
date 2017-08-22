@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from shapely.geometry import mapping, shape
-import fiona
 import argparse
+
 import centerline
+import fiona
+from shapely.geometry import mapping, shape
 
 
 class Shp2centerline(object):
@@ -33,9 +34,9 @@ class Shp2centerline(object):
 
         for key in self.dct_polygons.keys():
             poly_geom = self.dct_polygons[key]
-            centerlineObj = centerline.Centerline(poly_geom, self.dist)
 
-            self.dct_centerlines[key] = centerlineObj.createCenterline()
+            self.dct_centerlines[key] = centerline.Centerline(
+                poly_geom, self.dist)
 
     def importSHP(self):
         """
