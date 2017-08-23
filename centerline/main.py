@@ -122,14 +122,11 @@ class Centerline(MultiLineString):
                 (e.g. [[X1, Y1], [X2, Y2], ..., [Xn, Yn])
 
         """
-
-        count = self._interpolation_distance
-
         STARTPOINT = [line.xy[0][0] - self._minx, line.xy[1][0] - self._miny]
         ENDPOINT = [line.xy[0][-1] - self._minx, line.xy[1][-1] - self._miny]
 
-        newline = []
-        newline.append(STARTPOINT)
+        count = self._interpolation_distance
+        newline = [STARTPOINT]
 
         while count < line.length:
             point = line.interpolate(count)
