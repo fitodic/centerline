@@ -71,8 +71,7 @@ def get_polygon_features(filepath):
         layer = datasource.GetLayerByIndex(layer_idx)
         layer_geometry_type = layer.GetGeomType()
 
-        if (layer_geometry_type == ogr.wkbPolygon or
-                layer_geometry_type == ogr.wkbMultiPolygon):
+        if layer_geometry_type == ogr.wkbPolygon:
             feature = layer.GetNextFeature()
             while feature is not None:
                 yield feature
