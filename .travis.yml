@@ -33,7 +33,7 @@ python:
   - "2.7"
   - "3.6"
 before_install:
-  - "pip install -U pip setuptools wheel coveralls"
+  - "pip install -U pip wheel coveralls"
   - . ./scripts/travis_gdal_install.sh
   - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
   - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
