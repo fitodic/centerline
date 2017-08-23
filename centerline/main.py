@@ -78,7 +78,7 @@ class Centerline(MultiLineString):
     def __densify_border(self):
         """Densify the border of a polygon.
 
-        The border is densified  by a given factor (by default: 0.5).
+        The border is densified by a given factor (by default: 0.5).
 
         The complexity of the polygon's geometry is evaluated in order
         to densify the borders of its interior rings as well.
