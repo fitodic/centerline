@@ -30,8 +30,7 @@ class Centerline(MultiLineString):
 
         if not isinstance(input_geom, Polygon):
             raise ValueError(
-                'Input geometry must be either a shapely.geometry.Polygon '
-                'or a shapely.geometry.MultiPolygon instance'
+                'Input geometry must be of type shapely.geometry.Polygon!'
             )
 
         self._input_geom = input_geom
