@@ -10,7 +10,7 @@ from shapely.ops import unary_union
 
 class Centerline(MultiLineString):
 
-    def __init__(self, input_geom, interpolation_distance=0.5):
+    def __init__(self, input_geom, interpolation_distance=0.5, **attributes):
         """Create a centerline object.
 
         Args:
@@ -39,6 +39,9 @@ class Centerline(MultiLineString):
         # Values used for temporary coordinate reduction
         self._minx = int(min(self._input_geom.envelope.exterior.xy[0]))
         self._miny = int(min(self._input_geom.envelope.exterior.xy[1]))
+
+        for key in attributes:
+            setattr(self, key, attributes.get(key))
 
         super(Centerline, self).__init__(lines=self._create_centerline())
 

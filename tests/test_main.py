@@ -78,3 +78,21 @@ class TestCenterlineSupportedGeometryTypes(TestCase):
 
         with self.assertRaises(ValueError):
             Centerline(GEOMETRY_COLLECTION)
+
+
+class TestCenterlineAttributes(TestCase):
+    """The attributes should be copied and assigned to the object."""
+
+    def test__object_has_assigned_attributes(self):
+        POLYGON = Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
+        ATTRIBUTES = {
+            'id': 1,
+            'name': 'polygon',
+            'valid': True
+        }
+
+        centerline = Centerline(POLYGON, **ATTRIBUTES)
+
+        self.assertEqual(centerline.id, ATTRIBUTES.get('id'))
+        self.assertEqual(centerline.name, ATTRIBUTES.get('name'))
+        self.assertEqual(centerline.valid, ATTRIBUTES.get('valid'))
