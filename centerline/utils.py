@@ -76,3 +76,5 @@ def get_polygon_features(filepath):
             while feature is not None:
                 yield feature
                 feature = layer.GetNextFeature()
+
+    datasource.Destroy()
