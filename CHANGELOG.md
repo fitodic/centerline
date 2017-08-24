@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `flake8` checks in the Travis build
 - `utils` module
 
+### Changed
+
+- The `Centerline` class extends Shapely's `MultiLineString` class
+
 ### Removed
 
 - Support for `GDAL<=2.0.1`
