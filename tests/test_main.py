@@ -96,3 +96,65 @@ class TestCenterlineAttributes(TestCase):
         self.assertEqual(centerline.id, ATTRIBUTES.get('id'))
         self.assertEqual(centerline.name, ATTRIBUTES.get('name'))
         self.assertEqual(centerline.valid, ATTRIBUTES.get('valid'))
+
+
+class TestCenterlineGeometricFeaturesWithASimplePolygon(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.POLYGON = Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
+        cls.CENTERLINE = Centerline(cls.POLYGON)
+
+    def test__is_multilinestring(self):
+        self.assertIsInstance(self.CENTERLINE, MultiLineString)
+
+    def test__length__greater_than_zero(self):
+        MIN_LENGTH = 0
+        self.assertGreater(self.CENTERLINE.length, MIN_LENGTH)
+
+    def test__is_valid(self):
+        self.assertTrue(self.CENTERLINE.is_valid)
+
+    def test__is_not_empty(self):
+        self.assertFalse(self.CENTERLINE.is_empty)
+
+    def test__is_simple(self):
+        self.assertTrue(self.CENTERLINE.is_simple)
+
+    def test__centerline_does_not_touch_the_polygons_boundary(self):
+        self.assertFalse(self.CENTERLINE.intersects(self.POLYGON.boundary))
+
+    def test__polygon_contains_the_centerline(self):
+        self.assertTrue(self.POLYGON.contains(self.CENTERLINE))
+
+
+class TestCenterlineGeometricFeaturesWithAComplexPolygon(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        EXTERIOR = [(0, 0), (0, 2), (2, 2), (2, 0), (0, 0)]
+        INTERIOR = [(1, 0), (0.5, 0.5), (1, 1), (1.5, 0.5), (1, 0)][::-1]
+        cls.POLYGON = Polygon(EXTERIOR, [INTERIOR])
+        cls.CENTERLINE = Centerline(cls.POLYGON)
+
+    def test__is_multilinestring(self):
+        self.assertIsInstance(self.CENTERLINE, MultiLineString)
+
+    def test__length__greater_than_zero(self):
+        MIN_LENGTH = 0
+        self.assertGreater(self.CENTERLINE.length, MIN_LENGTH)
+
+    def test__is_valid(self):
+        self.assertTrue(self.CENTERLINE.is_valid)
+
+    def test__is_not_empty(self):
+        self.assertFalse(self.CENTERLINE.is_empty)
+
+    def test__is_simple(self):
+        self.assertTrue(self.CENTERLINE.is_simple)
+
+    def test__centerline_does_not_touch_the_polygons_boundary(self):
+        self.assertFalse(self.CENTERLINE.intersects(self.POLYGON.boundary))
+
+    def test__polygon_contains_the_centerline(self):
+        self.assertTrue(self.POLYGON.contains(self.CENTERLINE))
