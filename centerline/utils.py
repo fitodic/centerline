@@ -10,6 +10,19 @@ from osgeo import gdal, ogr
 gdal.UseExceptions()
 
 
+def get_spatial_reference_from_layer(layer):
+    """Get the layer's spatial reference.
+
+    Args:
+        layer {osgeo.ogr.Layer}: layer
+
+    Returns:
+        {osgeo.osr.SpatialReference}
+
+    """
+    return layer.GetSpatialRef()
+
+
 def get_ogr_driver(filepath):
     """Get the OGR driver from the provided file extension.
 

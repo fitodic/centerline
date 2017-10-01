@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 import os
 from unittest import TestCase
 
-from centerline.utils import get_ogr_driver, get_polygon_features
+from centerline.utils import (get_ogr_driver, get_polygon_features,
+                              get_spatial_reference_from_layer, save_features)
 from osgeo import ogr
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -107,3 +108,31 @@ class TestGetPolygonFeature(TestCase):
 
         with self.assertRaises(ValueError):
             [feature for feature in get_polygon_features(FILEPATH)]
+
+
+class TestGetSpatialReferenceFromLayer(TestCase):
+
+    def test__shapefile_spatial_ref(self):
+        EXPECTED_OUTPUT_PROJ4 = '+proj=longlat +datum=WGS84 +no_defs '
+        FILEPATH = os.path.join(SHP_DIR, 'polygons.shp')
+
+        driver = get_ogr_driver(filepath=FILEPATH)
+        datasource = driver.Open(FILEPATH, 0)
+        layer = datasource.GetLayer()
+
+        spatial_ref = get_spatial_reference_from_layer(layer)
+
+        self.assertEqual(spatial_ref.ExportToProj4(), EXPECTED_OUTPUT_PROJ4)
+
+    def test__geojson_spatial_ref(self):
+        EXPECTED_OUTPUT_PROJ4 = '+proj=longlat +datum=WGS84 +no_defs '
+        FILEPATH = os.path.join(GEOJSON_DIR, 'polygons.geojson')
+
+        driver = get_ogr_driver(filepath=FILEPATH)
+        datasource = driver.Open(FILEPATH, 0)
+        layer = datasource.GetLayer()
+
+        spatial_ref = get_spatial_reference_from_layer(layer)
+
+        self.assertEqual(spatial_ref.ExportToProj4(), EXPECTED_OUTPUT_PROJ4)
+
