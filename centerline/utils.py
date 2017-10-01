@@ -10,7 +10,7 @@ from osgeo import gdal, ogr
 gdal.UseExceptions()
 
 
-def get_ogr_driver(file_extension):
+def get_ogr_driver(filepath):
     """Get the OGR driver from the provided file extension.
 
     Args:
@@ -23,19 +23,21 @@ def get_ogr_driver(file_extension):
         {ValueError}: when no driver is found
 
     """
+    filename, file_extension = os.path.splitext(filepath)
+    EXTENSION = file_extension[1:]
+
     ogr_driver_count = ogr.GetDriverCount()
     for idx in range(ogr_driver_count):
         driver = ogr.GetDriver(idx)
         driver_extension = driver.GetMetadataItem(str('DMD_EXTENSION')) or ''
         driver_extensions = driver.GetMetadataItem(str('DMD_EXTENSIONS')) or ''
 
-        if (file_extension == driver_extension or
-                file_extension in driver_extensions):
+        if EXTENSION == driver_extension or EXTENSION in driver_extensions:
             return driver
 
     else:
         msg = 'No driver found for the following file extension: {}'.format(
-            file_extension)
+            EXTENSION)
         raise ValueError(msg)
 
 
@@ -53,10 +55,8 @@ def get_polygon_features(filepath):
         {ValueError}: no driver is found
 
     """
-    filename, file_extension = os.path.splitext(filepath)
-
     try:
-        driver = get_ogr_driver(file_extension=file_extension[1:])
+        driver = get_ogr_driver(filepath=filepath)
     except ValueError:
         raise
 
