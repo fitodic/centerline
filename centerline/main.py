@@ -9,9 +9,28 @@ from shapely.ops import unary_union
 
 
 class Centerline(MultiLineString):
+    """
+    The polygon's skeleton.
+
+    The polygon's attributes are copied and set as the centerline's
+    attributes. The rest of the attributes are inherited from the
+    MultiLineString class.
+
+    Attributes:
+        geoms (shapely.geometry.base.GeometrySequence): A sequence of
+            LineStrings
+
+    Extends:
+        shapely.geometry.MultiLineString
+
+    """
 
     def __init__(self, input_geom, interpolation_dist=0.5, **attributes):
-        """Create a centerline object.
+        """
+        Create a centerline object.
+
+        The values provided under `attributes` are used for creating
+        the object's attributes.
 
         Args:
             input_geom (shapely.geometry.Polygon): shapely geometry
@@ -27,7 +46,6 @@ class Centerline(MultiLineString):
             shapely.geometry.MultiLineString
 
         """
-
         if not isinstance(input_geom, Polygon):
             raise ValueError(
                 'Input geometry must be of type shapely.geometry.Polygon!'
@@ -46,7 +64,7 @@ class Centerline(MultiLineString):
 
     def _create_centerline(self):
         """
-        Calculates the centerline of a polygon.
+        Calculate the centerline of a polygon.
 
         Densifies the border of a polygon which is then represented by a Numpy
         array of points necessary for creating the Voronoi diagram. Once the
@@ -55,8 +73,8 @@ class Centerline(MultiLineString):
 
         Returns:
             a union of lines that are located within the polygon.
-        """
 
+        """
         border = array(self.__densify_border())
 
         vor = Voronoi(border)
@@ -77,7 +95,8 @@ class Centerline(MultiLineString):
         return unary_union(lst_lines)
 
     def __densify_border(self):
-        """Densify the border of a polygon.
+        """
+        Densify the border of a polygon.
 
         The border is densified by a given factor (by default: 0.5).
 
@@ -85,12 +104,13 @@ class Centerline(MultiLineString):
         to densify the borders of its interior rings as well.
 
         Returns:
-            {list}: a list of points where each point is represented by
+            list: a list of points where each point is represented by
                 a list of its reduced coordinates
-                (e.g. [[X1, Y1], [X2, Y2], ..., [Xn, Yn])
+
+        Example:
+            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
 
         """
-
         if len(self._input_geom.interiors) == 0:
             exterIN = LineString(self._input_geom.exterior)
             points = self.__fixed_interpolation(exterIN)
@@ -106,7 +126,8 @@ class Centerline(MultiLineString):
         return points
 
     def __fixed_interpolation(self, line):
-        """Place additional points on the border at the specified distance.
+        """
+        Place additional points on the border at the specified distance.
 
         By default the distance is 0.5 (meters) which means that the first
         point will be placed 0.5 m from the starting point, the second
@@ -115,12 +136,14 @@ class Centerline(MultiLineString):
         the length of the line.
 
         Args:
-            line {shapely.geometry.LineString}: object
+            line (shapely.geometry.LineString): object
 
         Returns:
-            {list}: a list of points where each point is represented by
+            list: a list of points where each point is represented by
                 a list of its reduced coordinates
-                (e.g. [[X1, Y1], [X2, Y2], ..., [Xn, Yn])
+
+        Example:
+            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
 
         """
         STARTPOINT = [line.xy[0][0] - self._minx, line.xy[1][0] - self._miny]
