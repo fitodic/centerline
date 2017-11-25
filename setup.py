@@ -28,7 +28,7 @@ setup(
     packages=['centerline'],
     install_requires=[
         'GDAL>=2.0.1',
-        'Fiona>=1.6.3',
+        'Fiona>=1.7.0',
         'Shapely>=1.5.13',
         'numpy>=1.10.4',
         'scipy>=0.16.1',
