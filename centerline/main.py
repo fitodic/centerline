@@ -10,21 +10,21 @@ from shapely.ops import unary_union
 
 class Centerline(MultiLineString):
 
-    def __init__(self, input_geom, interpolation_distance=0.5, **attributes):
+    def __init__(self, input_geom, interpolation_dist=0.5, **attributes):
         """Create a centerline object.
 
         Args:
-            input_geom {shapely.geometry.Polygon}: shapely geometry
-            interpolation_distance {float}: interpolation distance [m]
-
-        Returns:
-            {shapely.geometry.MultiLineString}: centerline geometry
+            input_geom (shapely.geometry.Polygon): shapely geometry
+            interpolation_dist (:obj:`float`, optional): interpolation
+                distance. Defaults to 0.5 (meters).
+            attributes (dict): The object's attributes that should be
+                copied to the new Centerline object
 
         Raises:
-            {ValueError}: invalid input geometry
+            ValueError: invalid input geometry
 
         Extends:
-            {shapely.geometry.MultiLineString}
+            shapely.geometry.MultiLineString
 
         """
 
@@ -34,7 +34,7 @@ class Centerline(MultiLineString):
             )
 
         self._input_geom = input_geom
-        self._interpolation_distance = abs(interpolation_distance)
+        self._interpolation_dist = abs(interpolation_dist)
         # Values used for temporary coordinate reduction
         self._minx = int(min(self._input_geom.envelope.exterior.xy[0]))
         self._miny = int(min(self._input_geom.envelope.exterior.xy[1]))
@@ -126,13 +126,13 @@ class Centerline(MultiLineString):
         STARTPOINT = [line.xy[0][0] - self._minx, line.xy[1][0] - self._miny]
         ENDPOINT = [line.xy[0][-1] - self._minx, line.xy[1][-1] - self._miny]
 
-        count = self._interpolation_distance
+        count = self._interpolation_dist
         newline = [STARTPOINT]
 
         while count < line.length:
             point = line.interpolate(count)
             newline.append([point.x - self._minx, point.y - self._miny])
-            count += self._interpolation_distance
+            count += self._interpolation_dist
 
         newline.append(ENDPOINT)
 
