@@ -76,7 +76,7 @@ Shapefile full of centerlines, use the command line tool:
 The BORDER\_DENSITY parameter is optional. If not specified, the default
 value is 0.5.
 
-The `create_centerlines` scripts is file format agnostic, meaning you should be able to work with all OGR's vector file formats. Example:
+The `create_centerlines` script is file format agnostic, meaning you should be able to work with all OGR's vector file formats. Example:
 
 .. code:: bash
 
