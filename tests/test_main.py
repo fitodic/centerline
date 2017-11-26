@@ -4,9 +4,10 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from centerline import Centerline
 from shapely.geometry import (GeometryCollection, LineString, MultiLineString,
                               MultiPoint, MultiPolygon, Point, Polygon)
+
+from centerline import Centerline
 
 
 class TestCenterlineSupportedGeometryTypes(TestCase):
