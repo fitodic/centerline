@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import argparse
+
+from centerline.io import create_centerlines
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Calculate the centerline of a polygon'
+    )
+
+    parser.add_argument(
+        'SRC',
+        type=str,
+        help='Name of the input Shapefile'
+    )
+    parser.add_argument(
+        'DEST',
+        type=str,
+        help='Name of the output Shapefile'
+    )
+    parser.add_argument(
+        'BORDENS',
+        type=float,
+        nargs='?',
+        default=0.5,
+        help='The density of the border. Defaults to 0.5 (meters)'
+    )
+    args = parser.parse_args()
+
+    create_centerlines(args.SRC, args.DEST, args.BORDENS)
