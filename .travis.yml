@@ -31,11 +31,11 @@ addons:
     - gfortran
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
 before_install:
   - "pip install -U pip wheel coveralls"
+  - "pip install setuptools==36.0.1"
   - . ./scripts/travis_gdal_install.sh
   - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
   - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
