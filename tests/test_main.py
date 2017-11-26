@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from shapely.geometry import (GeometryCollection, LineString, MultiLineString,
-                              MultiPoint, MultiPolygon, Point, Polygon)
+from shapely.geometry import (
+    GeometryCollection, LineString, MultiLineString, MultiPoint, MultiPolygon,
+    Point, Polygon
+)
 
 from centerline import Centerline
 

@@ -40,15 +40,15 @@ setup(
             'ipdb',
             'ipython[all]',
             'notebook',
-            'jupyter'
+            'jupyter',
+            'isort'
         ],
         'test': [
             'coverage',
             'pytest>=3.0.0',
             'pytest-cov',
             'pytest-sugar',
-            'pytest-runner',
-            'tox'
+            'pytest-runner'
         ],
     },
     scripts=[

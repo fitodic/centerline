@@ -51,8 +51,9 @@ install:
   - "pip install GDAL==$GDALVERSION"
   - "pip install -e .[test]"
 before_script:
-  - pip install flake8
+  - pip install flake8 isort
   - flake8
+  - isort --recursive --check-only
 script:
   - pytest
 after_success:

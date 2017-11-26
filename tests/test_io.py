@@ -7,6 +7,7 @@ import shutil
 from unittest import TestCase
 
 import fiona
+
 from centerline.io import create_centerlines
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
