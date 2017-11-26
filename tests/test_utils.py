@@ -5,11 +5,20 @@ from __future__ import unicode_literals
 import os
 from unittest import TestCase
 
-from centerline.utils import get_ogr_driver
+from centerline.utils import get_ogr_driver, is_polygon
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 SHP_DIR = os.path.join(TESTS_DIR, 'data', 'shp')
 GEOJSON_DIR = os.path.join(TESTS_DIR, 'data', 'geojson')
+
+
+class TestIsPolygon(TestCase):
+
+    def test__returns_true(self):
+        self.assertTrue(is_polygon('Polygon'))
+
+    def test__returns_false_for_multipolygon(self):
+        self.assertFalse(is_polygon('MultiPolygon'))
 
 
 class TestGetOgrDriver(TestCase):
