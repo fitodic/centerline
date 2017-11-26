@@ -13,7 +13,8 @@ from centerline import Centerline
 
 
 class TestCenterlineSupportedGeometryTypes(TestCase):
-    """Only Polygons should be supported.
+    """
+    Only Polygons should be supported.
 
     For more information about creating the geometry objects (like the
     ones used below) see The Shapely User Manual:

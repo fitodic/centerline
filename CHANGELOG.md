@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- `flake8` and `isort` configuration
-- `flake8` and `isort` checks in the Travis build
+- `pylama` and `isort` configuration
+- `pylama` and `isort` checks in the Travis build
 - `utils` and `io` modules
 - `create_centerlines` script and function for creating centerlines that is format agnotic. All OGR vector file formats should be supported.
 

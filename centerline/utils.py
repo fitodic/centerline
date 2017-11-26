@@ -14,7 +14,8 @@ ALLOWED_INPUT_GEOMETRY = 'Polygon'
 
 
 def is_polygon(geometry_type):
-    """Confirm that the geometry type is of type Polygon.
+    """
+    Confirm that the geometry type is of type Polygon.
 
     Args:
         geometry_type (str): geometry type

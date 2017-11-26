@@ -41,8 +41,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'autopep8',
-            'flake8',
+            'pylama'
             'ipdb',
             'ipython[all]',
             'notebook',
