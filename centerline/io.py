@@ -10,7 +10,8 @@ from .utils import get_ogr_driver, is_polygon
 
 
 def create_centerlines(src, dst, density=0.5):
-    """Create centerlines and save the to an ESRI Shapefile.
+    """
+    Create centerlines and save the to an ESRI Shapefile.
 
     Reads polygons from the `src` ESRI Shapefile, creates Centerline
     objects with the specified `density` parameter and writes them to
