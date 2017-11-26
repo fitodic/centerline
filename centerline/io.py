@@ -6,16 +6,7 @@ import fiona
 from shapely.geometry import mapping, shape
 
 from .main import Centerline
-from .utils import get_ogr_driver
-
-ALLOWED_INPUT_GEOMETRY = 'Polygon'
-
-
-def _is_illegal_geometry(geometry_type):
-    if geometry_type != ALLOWED_INPUT_GEOMETRY:
-        return True
-    else:
-        return False
+from .utils import get_ogr_driver, is_polygon
 
 
 def create_centerlines(src, dst, density=0.5):
@@ -58,7 +49,7 @@ def create_centerlines(src, dst, density=0.5):
                     geom = record.get('geometry')
 
                     # Skip geometries that are not of type Polygon
-                    if _is_illegal_geometry(geometry_type=geom.get('type')):
+                    if is_polygon(geometry_type=geom.get('type')):
                         continue
 
                     input_geom = shape(geom)

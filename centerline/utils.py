@@ -10,6 +10,25 @@ from osgeo import gdal, ogr
 gdal.UseExceptions()
 
 
+ALLOWED_INPUT_GEOMETRY = 'Polygon'
+
+
+def is_polygon(geometry_type):
+    """Confirm that the geometry type is of type Polygon.
+
+    Args:
+        geometry_type (str): geometry type
+
+    Returns:
+        bool
+
+    """
+    if geometry_type == ALLOWED_INPUT_GEOMETRY:
+        return True
+    else:
+        return False
+
+
 def get_ogr_driver(filepath):
     """
     Get the OGR driver from the provided file extension.
