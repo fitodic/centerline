@@ -10,30 +10,18 @@ from osgeo import gdal, ogr
 gdal.UseExceptions()
 
 
-def get_spatial_reference_from_layer(layer):
-    """Get the layer's spatial reference.
-
-    Args:
-        layer {osgeo.ogr.Layer}: layer
-
-    Returns:
-        {osgeo.osr.SpatialReference}
-
-    """
-    return layer.GetSpatialRef()
-
-
 def get_ogr_driver(filepath):
-    """Get the OGR driver from the provided file extension.
+    """
+    Get the OGR driver from the provided file extension.
 
     Args:
-        file_extension {str}: file extension
+        file_extension (str): file extension
 
     Returns:
-        {osgeo.ogr.Driver}
+        osgeo.ogr.Driver
 
     Raises:
-        {ValueError}: when no driver is found
+        ValueError: no driver is found
 
     """
     filename, file_extension = os.path.splitext(filepath)
@@ -52,42 +40,3 @@ def get_ogr_driver(filepath):
         msg = 'No driver found for the following file extension: {}'.format(
             EXTENSION)
         raise ValueError(msg)
-
-
-def get_polygon_features(filepath):
-    """Get the Polygon or MultiPolygon features from the source file.
-
-    Args:
-        filepath {str}: path to the source file
-
-    Yields:
-        {osgeo.ogr.Feature}: a Polygon or a MultiPolygon feature
-
-    Raises:
-        {AttributeError}: invalid filepath
-        {ValueError}: no driver is found
-
-    """
-    try:
-        driver = get_ogr_driver(filepath=filepath)
-    except ValueError:
-        raise
-
-    datasource = driver.Open(filepath, 0)
-
-    try:
-        layer_count = datasource.GetLayerCount()
-    except AttributeError:
-        raise
-
-    for layer_idx in range(layer_count):
-        layer = datasource.GetLayerByIndex(layer_idx)
-        layer_geometry_type = layer.GetGeomType()
-
-        if layer_geometry_type == ogr.wkbPolygon:
-            feature = layer.GetNextFeature()
-            while feature is not None:
-                yield feature
-                feature = layer.GetNextFeature()
-
-    datasource.Destroy()
