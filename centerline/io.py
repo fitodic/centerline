@@ -49,7 +49,6 @@ def create_centerlines(src, dst, density=0.5):
                 for record in source:
                     geom = record.get('geometry')
 
-                    # Skip geometries that are not of type Polygon
                     if not is_polygon(geometry_type=geom.get('type')):
                         continue
 
