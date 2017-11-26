@@ -60,13 +60,15 @@ def create_centerlines(src, dst, density=0.5):
                         **attributes
                     )
 
-                    centerline = {}
-                    centerline['geometry'] = mapping(centerline_obj)
-                    centerline['properties'] = {
-                        k: v
-                        for k, v in centerline_obj.__dict__.items()
-                        if k in attributes.keys()
+                    centerline_dict = {
+                        'geometry': mapping(centerline_obj),
+                        'properties': {
+                            k: v
+                            for k, v in centerline_obj.__dict__.items()
+                            if k in attributes.keys()
+                        }
                     }
-                    destination.write(centerline)
+
+                    destination.write(centerline_dict)
 
     return None
