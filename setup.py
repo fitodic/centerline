@@ -52,7 +52,7 @@ setup(
         ],
     },
     scripts=[
-        'bin/shp2centerline',
+        'bin/create_centerlines',
     ],
     include_package_data=True,
     zip_safe=False,

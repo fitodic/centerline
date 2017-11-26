@@ -6,6 +6,7 @@ import fiona
 from shapely.geometry import mapping, shape
 
 from .main import Centerline
+from .utils import get_ogr_driver
 
 ALLOWED_INPUT_GEOMETRY = 'Polygon'
 
@@ -17,7 +18,7 @@ def _is_illegal_geometry(geometry_type):
         return False
 
 
-def centerline_shp(src, dst, density=0.5):
+def create_centerlines(src, dst, density=0.5):
     """Create centerlines and save the to an ESRI Shapefile.
 
     Reads polygons from the `src` ESRI Shapefile, creates Centerline
@@ -37,6 +38,11 @@ def centerline_shp(src, dst, density=0.5):
         None
 
     """
+    try:
+        DST_DRIVER = get_ogr_driver(filepath=dst)
+    except ValueError:
+        raise
+
     with fiona.drivers():
         with fiona.open(path=src, mode='r') as source:
             SCHEMA = source.schema.copy()
@@ -44,7 +50,7 @@ def centerline_shp(src, dst, density=0.5):
             with fiona.open(
                     path=dst,
                     mode='w',
-                    driver=source.driver,
+                    driver=DST_DRIVER.GetName(),
                     schema=SCHEMA,
                     crs=source.crs,
                     encoding=source.encoding) as destination:
