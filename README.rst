@@ -3,9 +3,11 @@ Centerline
 
 .. image:: https://travis-ci.org/fitodic/centerline.svg?branch=master
     :target: https://travis-ci.org/fitodic/centerline
+    :alt: Build
 
 .. image:: https://coveralls.io/repos/github/fitodic/centerline/badge.svg?branch=master
     :target: https://coveralls.io/github/fitodic/centerline?branch=master
+    :alt: Coverage
 
 .. image:: https://img.shields.io/pypi/v/centerline.svg
     :target: https://pypi.python.org/pypi/centerline
@@ -58,8 +60,7 @@ For more info, visit `Stack Exchange <http://gis.stackexchange.com/questions/289
 Usage:
 ~~~~~~
 
-If you are planning on using this package inside of your own code, just
-type:
+If you plan on using this package inside of your own code, just type:
 
 .. code:: python
 
@@ -70,14 +71,16 @@ Shapefile full of centerlines, use the command line tool:
 
 .. code:: bash
 
-    $ shp2centerline INPUT_PATH.shp OUTPUT_PATH.shp [BORDER_DENSITY]
+    $ create_centerlines INPUT_PATH.shp OUTPUT_PATH.shp [BORDER_DENSITY]
 
 The BORDER\_DENSITY parameter is optional. If not specified, the default
 value is 0.5.
 
-**Warning:** The INPUT\_PATH.shp file needs to have a column called
-**id** with unique values or the script will fail to execute
-successfully.
+The `create_centerlines` scripts is file format agnostic, meaning you should be able to work with all OGR's vector file formats. Example:
+
+.. code:: bash
+
+    $ create_centerlines input.shp output.geojson
 
 References:
 ~~~~~~~~~~~
