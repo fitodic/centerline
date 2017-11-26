@@ -17,9 +17,15 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Intended Audience :: Science/Research',
-        'Topic :: Scientific/Engineering :: GIS'
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering :: GIS',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     url='https://github.com/fitodic/centerline.git',
     author='Filip Todic',
