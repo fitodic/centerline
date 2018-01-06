@@ -41,7 +41,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'pylama'
+            'pylama',
             'ipdb',
             'ipython[all]',
             'notebook',
