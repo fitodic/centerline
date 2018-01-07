@@ -33,6 +33,13 @@ Roads, rivers and similar linear structures are often represented by long and co
    installation.rst
    usage.rst
 
+.. toctree::
+  :maxdepth: 2
+  :caption: API:
+
+  modules/centerline.rst
+  modules/modules.rst
+
 
 Indices and tables
 ==================
