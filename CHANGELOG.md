@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 0.4.1 - 2018-01-07
+
+## Fixed
+
+- Ignore the `osgeo` package when building the documentation on [readthedocs.org](https://readthedocs.org/)
+
+## 0.4 - 2018-01-07
 
 ### Added
 
