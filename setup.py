@@ -55,6 +55,10 @@ setup(
             'pytest-sugar',
             'pytest-runner'
         ],
+        'docs': [
+            'Sphinx',
+            'sphinx_rtd_theme'
+        ]
     },
     scripts=[
         'bin/create_centerlines',
