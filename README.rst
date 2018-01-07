@@ -19,8 +19,6 @@ Calculate the centerline of a polygon.
 .. figure::  docs/source/images/example.png
    :align:   center
 
-   The source and the output geometry visualized in `QGIS <https://www.qgis.org/en/site/>`_.
-
 Roads, rivers and similar linear structures are often represented by
 long and complex polygons. Since one of the most important attributes of
 a linear structure is its length, extracting that attribute from a
