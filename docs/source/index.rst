@@ -31,6 +31,7 @@ Roads, rivers and similar linear structures are often represented by long and co
    :caption: Contents:
 
    installation.rst
+   usage.rst
 
 
 Indices and tables
