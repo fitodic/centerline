@@ -1,2 +1,8 @@
 Sphinx
 sphinx_rtd_theme
+
+# Required by readthedocs.io documentation build for generating the API docs
+Fiona>=1.7.0
+numpy>=1.10.4
+scipy>=0.16.1
+Shapely>=1.5.13

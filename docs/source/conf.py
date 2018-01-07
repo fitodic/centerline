@@ -181,3 +181,8 @@ texinfo_documents = [
 # Napoleon settings
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
+
+# The GDAL package first has to be installed system-wide which breaks
+# the documentation build on readthedocs.io. Therefore, the `osgeo`
+# module is mocked using `autodoc_mock_imports`
+autodoc_mock_imports = ['osgeo']
