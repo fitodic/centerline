@@ -18,6 +18,10 @@ Welcome to centerline's documentation!
     :target: https://pypi.python.org/pypi/centerline
     :alt: Version
 
+.. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
+    :target: http://centerline.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 
 .. figure::  images/example.png
    :align:   center
