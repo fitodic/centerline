@@ -59,4 +59,7 @@ target/
 *.ipynb
 .ipynb_checkpoints/
 
+# Rope project
+.ropeproject/
+
 # Project specific

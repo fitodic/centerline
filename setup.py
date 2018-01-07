@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='centerline',
-    version='0.3',
+    version='0.4',
     description='Calculate the centerline of a polygon',
     long_description=long_description,
     classifiers=[
@@ -55,6 +55,10 @@ setup(
             'pytest-sugar',
             'pytest-runner'
         ],
+        'docs': [
+            'Sphinx',
+            'sphinx_rtd_theme'
+        ]
     },
     scripts=[
         'bin/create_centerlines',

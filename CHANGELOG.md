@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- Sphinx documentation
+
 ### Fixed
 
 - Add a comma to the list of development requirements
