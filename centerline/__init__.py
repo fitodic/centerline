@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from . import utils
+from . import io, utils
 from .main import Centerline
 
-__all__ = ('io', 'utils', 'Centerline')
+__all__ = ('Centerline', 'io', 'utils')
