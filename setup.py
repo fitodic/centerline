@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='centerline',
-    version='0.4',
+    version='0.4.1',
     description='Calculate the centerline of a polygon',
     long_description=long_description,
     classifiers=[
