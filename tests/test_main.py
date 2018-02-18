@@ -83,6 +83,15 @@ class TestCenterlineSupportedGeometryTypes(TestCase):
         with self.assertRaises(ValueError):
             Centerline(GEOMETRY_COLLECTION)
 
+    def test__too_large_interp_dist__raises_runtimeerror(self):
+        POLYGON = Polygon([[0, 0], [10, 0], [10, 10], [0, 10]])
+
+        with self.assertRaises(RuntimeError):
+            Centerline(POLYGON, 10)
+
+        centerline = Centerline(POLYGON, 5)
+        self.assertIsInstance(centerline, Centerline)
+
 
 class TestCenterlineAttributes(TestCase):
     """The attributes should be copied and assigned to the object."""

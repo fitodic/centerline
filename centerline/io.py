@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import logging
 
 import fiona
 from shapely.geometry import mapping, shape
@@ -54,11 +55,18 @@ def create_centerlines(src, dst, density=0.5):
 
                     input_geom = shape(geom)
                     attributes = record.get('properties')
-                    centerline_obj = Centerline(
-                        input_geom=input_geom,
-                        interpolation_dist=density,
-                        **attributes
-                    )
+                    try:
+                        centerline_obj = Centerline(
+                            input_geom=input_geom,
+                            interpolation_dist=density,
+                            **attributes
+                        )
+                    except RuntimeError as err:
+                        logging.warning(
+                            "ignoring record that could not be processed: %s",
+                            err
+                        )
+                        continue
 
                     centerline_dict = {
                         'geometry': mapping(centerline_obj),

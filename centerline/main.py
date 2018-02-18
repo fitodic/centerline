@@ -92,6 +92,13 @@ class Centerline(MultiLineString):
                 if line.within(self._input_geom) and len(line.coords[0]) > 1:
                     lst_lines.append(line)
 
+        nr_lines = len(lst_lines)
+        if nr_lines < 2:
+            raise RuntimeError(
+                "Number of produced ridges is too small: {}. ".format(nr_lines) +
+                "This might be caused by too large interpolation distance."
+            )
+
         return unary_union(lst_lines)
 
     def __densify_border(self):
