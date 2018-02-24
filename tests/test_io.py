@@ -38,10 +38,14 @@ class TestCreateCenterlines(TestCase):
 
         log_name = os.path.join(TMP_DIR, "logging.log")
         logging.basicConfig(filename=log_name)
-        output = create_centerlines(src=self.INPUT_SHP, dst=DST_SHP, density=11)
+        create_centerlines(src=self.INPUT_SHP, dst=DST_SHP, density=11)
         with open(log_name) as log:
             self.assertEqual(
-                "WARNING:root:ignoring record that could not be processed: Number of produced ridges is too small: 0, this might be caused by too large interpolation distance.",
+                "WARNING:root:ignoring record " +
+                "that could not be processed: " +
+                "Number of produced ridges is too small: " +
+                "0, this might be caused by too large " +
+                "interpolation distance.",
                 log.readlines()[0].strip(),
             )
 
