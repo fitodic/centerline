@@ -94,10 +94,10 @@ class Centerline(MultiLineString):
 
         nr_lines = len(lst_lines)
         if nr_lines < 2:
-            raise RuntimeError(
-                "Number of produced ridges is too small: {}".format(nr_lines) +
+            raise RuntimeError((
+                "Number of produced ridges is too small: {}"
                 ", this might be caused by too large interpolation distance."
-            )
+            ).format(nr_lines))
 
         return unary_union(lst_lines)
 
