@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+import logging
 import os
 import shutil
 from unittest import TestCase
@@ -31,6 +32,27 @@ class TestCreateCenterlines(TestCase):
 
         output = create_centerlines(src=self.INPUT_SHP, dst=DST_SHP)
         self.assertIsNone(output)
+
+    def test__shp_to_shp_too_big_density(self):
+        DST_SHP = os.path.join(TMP_DIR, 'centerlines.shp')
+        saved_rows = []
+
+        def fake_warning(s, arg=None):
+            if arg is not None:
+                s = s % arg
+            saved_rows.append(s)
+
+        orig_warning = logging.warning
+        logging.warning = fake_warning
+        create_centerlines(src=self.INPUT_SHP, dst=DST_SHP, density=11)
+        self.assertEqual(
+            saved_rows[0],
+            "ignoring record that could not be processed: " +
+            "Number of produced ridges is too small: " +
+            "0, this might be caused by too large " +
+            "interpolation distance.",
+        )
+        logging.warning = orig_warning
 
     def test__shp_to_shp_records_geom_type_is_multilinestring(self):
         EXPECTED_TYPE = 'MultiLineString'
