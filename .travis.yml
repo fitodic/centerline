@@ -34,6 +34,7 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
+  - "3.7"
 before_install:
   - "pip install -U pip wheel coveralls"
   - "pip install setuptools==36.0.1"
