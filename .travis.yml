@@ -34,7 +34,6 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
-  - "3.7"
 before_install:
   - "pip install -U pip wheel coveralls setuptools"
   - . ./scripts/travis_gdal_install.sh
