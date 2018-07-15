@@ -36,8 +36,7 @@ python:
   - "3.6"
   - "3.7"
 before_install:
-  - "pip install -U pip wheel coveralls"
-  - "pip install setuptools==36.0.1"
+  - "pip install -U pip wheel coveralls setuptools"
   - . ./scripts/travis_gdal_install.sh
   - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
   - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
