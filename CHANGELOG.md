@@ -4,9 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.2 - Unreleased
+
+### Added
+
+- `GDAL` 2.3.1 to the CI configuration
+
+### Changed
+
+- Moved the `coverage` configuration to setup.cfg
+
+### Fixed
+
+- Error when `MultiLineString` degenerates into `LineString` ([#14](https://github.com/fitodic/centerline/issues/14)). Thanks [mxwell](https://github.com/mxwell)!
+
+
 ## 0.4.1 - 2018-01-07
 
-## Fixed
+### Fixed
 
 - Ignore the `osgeo` package when building the documentation on [readthedocs.org](https://readthedocs.org/)
 
