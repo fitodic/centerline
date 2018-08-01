@@ -20,9 +20,6 @@ class Centerline(MultiLineString):
         geoms (shapely.geometry.base.GeometrySequence): A sequence of
             LineStrings
 
-    Extends:
-        shapely.geometry.MultiLineString
-
     """
 
     def __init__(self, input_geom, interpolation_dist=0.5, **attributes):
@@ -41,9 +38,6 @@ class Centerline(MultiLineString):
 
         Raises:
             ValueError: invalid input geometry
-
-        Extends:
-            shapely.geometry.MultiLineString
 
         """
         if not isinstance(input_geom, Polygon):
