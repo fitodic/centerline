@@ -45,21 +45,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
-# Translations
-*.mo
-*.pot
-
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
-
-# Jupyter Notebook
-*.ipynb
-.ipynb_checkpoints/
-
-# Rope project
-.ropeproject/
-
-# Project specific
