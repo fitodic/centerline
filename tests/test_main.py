@@ -9,7 +9,7 @@ from shapely.geometry import (
     Point, Polygon
 )
 
-from centerline import Centerline
+from centerline.main import Centerline
 
 
 class TestCenterlineSupportedGeometryTypes(TestCase):
@@ -64,21 +64,17 @@ class TestCenterlineSupportedGeometryTypes(TestCase):
             Centerline(LINESTRING)
 
     def test__multilinestring__raises_valueerror(self):
-        MULTILINESTRING = MultiLineString(
-            [((0, 0), (1, 1)), ((-1, 0), (1, 0))]
-        )
+        MULTILINESTRING = MultiLineString([((0, 0), (1, 1)), ((-1, 0), (1,
+                                                                        0))])
 
         with self.assertRaises(ValueError):
             Centerline(MULTILINESTRING)
 
     def test__geometry_collection__raises_valueerror(self):
         GEOMETRY_COLLECTION = GeometryCollection(
-            (
-                Point(0, 0),
-                LineString([(0, 0), (0.8, 0.8), (1.8, 0.95), (2.6, 0.5)]),
-                Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
-            )
-        )
+            (Point(0, 0),
+             LineString([(0, 0), (0.8, 0.8), (1.8, 0.95), (2.6, 0.5)]),
+             Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])))
 
         with self.assertRaises(ValueError):
             Centerline(GEOMETRY_COLLECTION)
@@ -98,11 +94,7 @@ class TestCenterlineAttributes(TestCase):
 
     def test__object_has_assigned_attributes(self):
         POLYGON = Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
-        ATTRIBUTES = {
-            'id': 1,
-            'name': 'polygon',
-            'valid': True
-        }
+        ATTRIBUTES = {'id': 1, 'name': 'polygon', 'valid': True}
 
         centerline = Centerline(POLYGON, **ATTRIBUTES)
 

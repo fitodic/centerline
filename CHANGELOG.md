@@ -12,12 +12,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Moved the `coverage` configuration to setup.cfg
+- Moved the `coverage` configuration to `setup.cfg`
+- Moved the package's metadata to `setup.cfg`
 
 ### Fixed
 
 - Error when `MultiLineString` degenerates into `LineString` ([#14](https://github.com/fitodic/centerline/issues/14)). Thanks [mxwell](https://github.com/mxwell)!
 
+### Removed
+
+- MANIFEST.in
+- `Centerline` from the `centerline` namespace. To import the `Centerline`
+    class, use `from centerline.main import Centerline`
 
 ## 0.4.1 - 2018-01-07
 
