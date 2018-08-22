@@ -2,11 +2,6 @@
 
 from __future__ import unicode_literals
 
-from . import io, utils
-from .main import Centerline
-
-__all__ = ('Centerline', 'io', 'utils')
-
 __title__ = 'centerline'
 __version__ = '0.4.1'
 __author__ = 'Filip Todic'

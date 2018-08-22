@@ -9,7 +9,7 @@ from shapely.geometry import (
     Point, Polygon
 )
 
-from centerline import Centerline
+from centerline.main import Centerline
 
 
 class TestCenterlineSupportedGeometryTypes(TestCase):
