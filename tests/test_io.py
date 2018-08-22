@@ -63,9 +63,7 @@ class TestCreateCenterlines(TestCase):
         with fiona.open(DST_SHP) as dst:
             for record in dst:
                 self.assertEqual(
-                    record.get('geometry').get('type'),
-                    EXPECTED_TYPE
-                )
+                    record.get('geometry').get('type'), EXPECTED_TYPE)
 
     def test__shp_to_shp_record_count_is_3(self):
         EXPECTED_COUNT = 3
@@ -91,9 +89,7 @@ class TestCreateCenterlines(TestCase):
         with fiona.open(DST_GEOJSON) as dst:
             for record in dst:
                 self.assertEqual(
-                    record.get('geometry').get('type'),
-                    EXPECTED_TYPE
-                )
+                    record.get('geometry').get('type'), EXPECTED_TYPE)
 
     def test__shp_to_geojson_record_count_is_3(self):
         EXPECTED_COUNT = 3
