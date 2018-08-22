@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Moved the `coverage` configuration to `setup.cfg`
 - Moved the package's metadata to `setup.cfg`
-- Convert the README from ReStructuredText to MarkDown
 
 ### Fixed
 
