@@ -34,4 +34,4 @@ Python
 
 If you need to customize the creation of centerlines in any way, simply import the `Centerline` class and use it or extend it::
 
-    from centerline import Centerline
+    from centerline.main import Centerline

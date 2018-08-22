@@ -66,7 +66,7 @@ If you want to contribute to this library, apart from installing GDAL, you have 
 
 2. install the library into its own virtual environment::
 
-    $ pip install -e .[dev,test,docs]
+    $ pip install -e .[dev,lint,test,docs]
 
 3. run the test suite to make sure everything is in order::
 
