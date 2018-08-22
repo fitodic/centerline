@@ -54,6 +54,6 @@ before_script:
   - pylama --options setup.cfg
   - isort --recursive --check-only
 script:
-  - pytest
+  - python setup.py test
 after_success:
   - coveralls
