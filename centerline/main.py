@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 
 from numpy import array
 from scipy.spatial import Voronoi
-from shapely.geometry import LineString, MultiLineString, Polygon
+from shapely.geometry import LineString, MultiLineString, MultiPolygon
 from shapely.ops import unary_union
+
+from .utils import is_valid_geometry
 
 
 class Centerline(MultiLineString):
@@ -40,9 +42,10 @@ class Centerline(MultiLineString):
             ValueError: invalid input geometry
 
         """
-        if not isinstance(input_geom, Polygon):
+        if not is_valid_geometry(input_geom):
             raise ValueError(
-                'Input geometry must be of type shapely.geometry.Polygon!'
+                'Input geometry must be of type shapely.geometry.Polygon '
+                'or shapely.geometry.MultiPolygon!'
             )
 
         self._input_geom = input_geom
@@ -112,17 +115,24 @@ class Centerline(MultiLineString):
             [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
 
         """
-        if len(self._input_geom.interiors) == 0:
-            exterIN = LineString(self._input_geom.exterior)
-            points = self.__fixed_interpolation(exterIN)
-
+        if isinstance(self._input_geom, MultiPolygon):
+            polygons = [polygon for polygon in self._input_geom]
         else:
-            exterIN = LineString(self._input_geom.exterior)
-            points = self.__fixed_interpolation(exterIN)
+            polygons = [self._input_geom]
 
-            for j in range(len(self._input_geom.interiors)):
-                interIN = LineString(self._input_geom.interiors[j])
-                points += self.__fixed_interpolation(interIN)
+        points = []
+        for polygon in polygons:
+            if len(polygon.interiors) == 0:
+                exterior = LineString(polygon.exterior)
+                points += self.__fixed_interpolation(exterior)
+
+            else:
+                exterior = LineString(polygon.exterior)
+                points += self.__fixed_interpolation(exterior)
+
+                for j in range(len(polygon.interiors)):
+                    interior = LineString(polygon.interiors[j])
+                    points += self.__fixed_interpolation(interior)
 
         return points
 

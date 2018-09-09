@@ -14,7 +14,7 @@ from centerline.main import Centerline
 
 class TestCenterlineSupportedGeometryTypes(TestCase):
     """
-    Only Polygons should be supported.
+    Only Polygons and MultiPolygons should be supported.
 
     For more information about creating the geometry objects (like the
     ones used below) see The Shapely User Manual:
@@ -39,11 +39,14 @@ class TestCenterlineSupportedGeometryTypes(TestCase):
         self.assertIsInstance(centerline, MultiLineString)
 
     def test__multipolygon__raises_valueerror(self):
-        POLYGONS = [Point(i, 0).buffer(0.1) for i in range(2)]
-        MULTIPOLYGON = MultiPolygon(POLYGONS)
+        POLYGON_1 = Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
+        POLYGON_2 = Polygon([[5, 5], [5, 9], [9, 9], [9, 5]])
 
-        with self.assertRaises(ValueError):
-            Centerline(MULTIPOLYGON)
+        MULTIPOLYGON = MultiPolygon([POLYGON_1, POLYGON_2])
+
+        centerline = Centerline(MULTIPOLYGON)
+
+        self.assertIsInstance(centerline, MultiLineString)
 
     def test__point__raises_valueerror(self):
         POINT = Point(0, 0)

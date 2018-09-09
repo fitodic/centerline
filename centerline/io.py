@@ -8,7 +8,7 @@ import fiona
 from shapely.geometry import mapping, shape
 
 from .main import Centerline
-from .utils import get_ogr_driver, is_polygon
+from .utils import get_ogr_driver, is_valid_geometry
 
 
 def create_centerlines(src, dst, density=0.5):
@@ -50,11 +50,11 @@ def create_centerlines(src, dst, density=0.5):
                     encoding=source.encoding) as destination:
                 for record in source:
                     geom = record.get('geometry')
+                    input_geom = shape(geom)
 
-                    if not is_polygon(geometry_type=geom.get('type')):
+                    if not is_valid_geometry(geometry=input_geom):
                         continue
 
-                    input_geom = shape(geom)
                     attributes = record.get('properties')
                     try:
                         centerline_obj = Centerline(
