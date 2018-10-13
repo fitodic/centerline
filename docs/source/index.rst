@@ -36,6 +36,7 @@ Roads, rivers and similar linear structures are often represented by long and co
 
    installation.rst
    usage.rst
+   faq.rst
 
 .. toctree::
   :maxdepth: 4
