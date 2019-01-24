@@ -48,7 +48,7 @@ before_install:
 install:
   - "if [ $(gdal-config --version) == \"$GDALVERSION\" ]; then echo \"Using gdal $GDALVERSION\"; else echo \"NOT using gdal $GDALVERSION as expected; aborting\"; exit 1; fi"
   - "pip install GDAL==$GDALVERSION"
-  - "pip install -e .[test]"
+  - "pip install -U -e .[test]"
 before_script:
   - pip install -U pylama isort
   - pylama --options setup.cfg
