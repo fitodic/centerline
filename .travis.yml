@@ -61,7 +61,7 @@ addons:
     - gfortran
 
 before_install:
-  - . ./scripts/travis_gdal_install.sh
+  - . ./.travis/install_gdal.sh
   - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
   - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
   - export GDAL_DATA=$GDALINST/gdal-$GDALVERSION/share/gdal
