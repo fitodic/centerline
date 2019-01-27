@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5.2 - 2019-01-27
+
+### Fixed
+
+- Package versioning that caused a broken upload
+
 ## 0.5.1 - 2019-01-27
 
 ### Changed
@@ -13,6 +19,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Drop the `path` keyword argument from `fiona.open` calls [#20](https://github.com/fitodic/centerline/issues/20).
+
+### Removed
+
+- Python 3.5 support
+
 
 ## 0.5 - 2018-09-09
 
