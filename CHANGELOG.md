@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.5.1 - Unreleased
 
+### Changed
+
+- Set the minimum `GDAL` version to 2.3.3
+
 ### Fixed
 
 - Drop the `path` keyword argument from `fiona.open` calls [#20](https://github.com/fitodic/centerline/issues/20).
