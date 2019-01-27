@@ -5,6 +5,10 @@ group: travis_latest
 language: python
 sudo: false
 
+stages:
+  - lint
+  - test
+
 notifications:
     email: false
 
@@ -20,19 +24,29 @@ env:
     - GDALBUILD=$HOME/gdalbuild
 
 matrix:
-  fast_finish: true
   include:
     - python: 2.7
-      stage: py27-gdal2.3
-      env:
-        - TOXENV=py27-gdal2.3
-        - GDALVERSION="2.3.2"
+      stage: lint
+      env: TOXENV=lint
+      addons: skip
+      before_install: skip
+      after_success: skip
 
-    - python: 3.7
-      stage: py37-gdal2.3
+    - python: 2.7
+      stage: test
       env:
-        - TOXENV=py37-gdal2.3
-        - GDALVERSION="2.3.2"
+        - TOXENV=py27-gdal2.3.3
+        - GDALVERSION=2.3.3
+    - python: 3.6
+      stage: test
+      env:
+        - TOXENV=py36-gdal2.3.3
+        - GDALVERSION=2.3.3
+    - python: 3.7
+      stage: test
+      env:
+        - TOXENV=py37-gdal2.3.3
+        - GDALVERSION=2.3.3
 
 addons:
   apt:
@@ -58,10 +72,6 @@ before_install:
   - "if [ $(gdal-config --version) == \"$GDALVERSION\" ]; then echo \"Using gdal $GDALVERSION\"; else echo \"NOT using gdal $GDALVERSION as expected; aborting\"; exit 1; fi"
 install:
   - pip install -U pip tox
-before_script:
-  - pip install -U pylama isort
-  - pylama --options setup.cfg
-  - isort --recursive --check-only
 script:
   - tox
 after_success:
