@@ -37,12 +37,12 @@ def create_centerlines(src, dst, density=0.5):
     except ValueError:
         raise
 
-    with fiona.drivers():
-        with fiona.open(path=src, mode='r') as source:
+    with fiona.Env():
+        with fiona.open(src, mode='r') as source:
             SCHEMA = source.schema.copy()
             SCHEMA.update({'geometry': 'MultiLineString'})
             with fiona.open(
-                    path=dst,
+                    dst,
                     mode='w',
                     driver=DST_DRIVER.GetName(),
                     schema=SCHEMA,
