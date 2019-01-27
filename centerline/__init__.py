@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 __title__ = 'centerline'
-__version__ = '0.5'
+__version__ = '0.5.1'
 __author__ = 'Filip Todic'
 __license__ = 'MIT'
 __copyright__ = 'Copyright (c) 2014-present Filip Todic'
