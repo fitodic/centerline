@@ -23,13 +23,6 @@ env:
 matrix:
   include:
     - python: 2.7
-      stage: lint
-      env: TOXENV=lint
-      addons: skip
-      before_install: skip
-      after_success: skip
-
-    - python: 2.7
       stage: test
       env:
         - TOXENV=py27-gdal2.3.3
