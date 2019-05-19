@@ -4,10 +4,8 @@ from __future__ import unicode_literals
 
 from numpy import array
 from scipy.spatial import Voronoi
-from shapely.geometry import LineString, MultiLineString, MultiPolygon
+from shapely.geometry import LineString, MultiLineString, MultiPolygon, Polygon
 from shapely.ops import unary_union
-
-from .utils import is_valid_geometry
 
 
 class Centerline(MultiLineString):
@@ -42,8 +40,8 @@ class Centerline(MultiLineString):
             ValueError: invalid input geometry
 
         """
-        if not is_valid_geometry(input_geom):
-            raise ValueError(
+        if not self._input_geometry_is_valid(input_geom):
+            raise TypeError(
                 'Input geometry must be of type shapely.geometry.Polygon '
                 'or shapely.geometry.MultiPolygon!'
             )
@@ -58,6 +56,13 @@ class Centerline(MultiLineString):
             setattr(self, key, attributes.get(key))
 
         super(Centerline, self).__init__(lines=self._create_centerline())
+
+    def _input_geometry_is_valid(self, input_geometry):
+        if isinstance(input_geometry, Polygon) \
+                or isinstance(input_geometry, MultiPolygon):
+            return True
+        else:
+            return False
 
     def _create_centerline(self):
         """

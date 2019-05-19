@@ -5,30 +5,9 @@ from __future__ import unicode_literals
 import os
 
 from osgeo import gdal, ogr
-from shapely.geometry import MultiPolygon, Polygon
 
 # Enable GDAL/OGR exceptions
 gdal.UseExceptions()
-
-
-ALLOWED_INPUT_GEOMETRIES = ('Polygon', 'MultiPolygon')
-
-
-def is_valid_geometry(geometry):
-    """
-    Confirm that the geometry type is of type Polygon or MultiPolygon.
-
-    Args:
-        geometry (BaseGeometry): BaseGeometry instance (e.g. Polygon)
-
-    Returns:
-        bool
-
-    """
-    if isinstance(geometry, Polygon) or isinstance(geometry, MultiPolygon):
-        return True
-    else:
-        return False
 
 
 def get_ogr_driver(filepath):

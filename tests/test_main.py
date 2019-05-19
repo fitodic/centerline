@@ -31,32 +31,32 @@ def test_creating_centerline_from_multipolygon_returns_centerline(
     assert isinstance(centerline, geometry.MultiLineString)
 
 
-def test_creating_centerline_from_point_raises_valueerror(point):
-    with pytest.raises(ValueError):
+def test_creating_centerline_from_point_raises_typeerror(point):
+    with pytest.raises(TypeError):
         Centerline(point)
 
 
-def test_creating_centerline_from_multipoint_raises_valueerror(multipoint):
-    with pytest.raises(ValueError):
+def test_creating_centerline_from_multipoint_raises_typeerror(multipoint):
+    with pytest.raises(TypeError):
         Centerline(multipoint)
 
 
-def test_creating_centerline_from_linestring_raises_valueerror(linestring):
-    with pytest.raises(ValueError):
+def test_creating_centerline_from_linestring_raises_typeerror(linestring):
+    with pytest.raises(TypeError):
         Centerline(linestring)
 
 
-def test_creating_centerline_from_multilinestring_raises_valueerror(
+def test_creating_centerline_from_multilinestring_raises_typeerror(
     multilinestring
 ):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Centerline(multilinestring)
 
 
-def test_creating_centerline_from_geometry_collection_raises_valueerror(
+def test_creating_centerline_from_geometry_collection_raises_typeerror(
     geometry_collection
 ):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Centerline(geometry_collection)
 
 

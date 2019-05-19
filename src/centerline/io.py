@@ -8,7 +8,7 @@ import fiona
 from shapely.geometry import mapping, shape
 
 from .main import Centerline
-from .utils import get_ogr_driver, is_valid_geometry
+from .utils import get_ogr_driver
 
 
 def create_centerlines(src, dst, density=0.5):
@@ -52,9 +52,6 @@ def create_centerlines(src, dst, density=0.5):
                     geom = record.get('geometry')
                     input_geom = shape(geom)
 
-                    if not is_valid_geometry(geometry=input_geom):
-                        continue
-
                     attributes = record.get('properties')
                     try:
                         centerline_obj = Centerline(
@@ -62,6 +59,9 @@ def create_centerlines(src, dst, density=0.5):
                             interpolation_dist=density,
                             **attributes
                         )
+                    except TypeError as error:
+                        logging.warning(error)
+                        continue
                     except RuntimeError as err:
                         logging.warning(
                             "ignoring record that could not be processed: %s",
