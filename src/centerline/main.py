@@ -40,29 +40,35 @@ class Centerline(MultiLineString):
             ValueError: invalid input geometry
 
         """
-        if not self._input_geometry_is_valid(input_geom):
+        self._input_geom = input_geom
+        self._interpolation_dist = abs(interpolation_dist)
+
+        if not self.input_geometry_is_valid():
             raise TypeError(
                 'Input geometry must be of type shapely.geometry.Polygon '
                 'or shapely.geometry.MultiPolygon!'
             )
 
-        self._input_geom = input_geom
-        self._interpolation_dist = abs(interpolation_dist)
-        # Values used for temporary coordinate reduction
-        self._minx = int(min(self._input_geom.envelope.exterior.xy[0]))
-        self._miny = int(min(self._input_geom.envelope.exterior.xy[1]))
-
-        for key in attributes:
-            setattr(self, key, attributes.get(key))
+        self._min_x, self._min_y = self.determine_minimal_coordinates()
+        self.assign_attributes_to_instance(attributes)
 
         super(Centerline, self).__init__(lines=self._create_centerline())
 
-    def _input_geometry_is_valid(self, input_geometry):
-        if isinstance(input_geometry, Polygon) \
-                or isinstance(input_geometry, MultiPolygon):
+    def input_geometry_is_valid(self):
+        if isinstance(self._input_geom, Polygon) \
+                or isinstance(self._input_geom, MultiPolygon):
             return True
         else:
             return False
+
+    def determine_minimal_coordinates(self):
+        min_x = int(min(self._input_geom.envelope.exterior.xy[0]))
+        min_y = int(min(self._input_geom.envelope.exterior.xy[1]))
+        return min_x, min_y
+
+    def assign_attributes_to_instance(self, attributes):
+        for key in attributes:
+            setattr(self, key, attributes.get(key))
 
     def _create_centerline(self):
         """
@@ -86,10 +92,10 @@ class Centerline(MultiLineString):
         for j, ridge in enumerate(vor.ridge_vertices):
             if -1 not in ridge:
                 line = LineString([
-                    (vertex[ridge[0]][0] + self._minx,
-                     vertex[ridge[0]][1] + self._miny),
-                    (vertex[ridge[1]][0] + self._minx,
-                     vertex[ridge[1]][1] + self._miny)])
+                    (vertex[ridge[0]][0] + self._min_x,
+                     vertex[ridge[0]][1] + self._min_y),
+                    (vertex[ridge[1]][0] + self._min_x,
+                     vertex[ridge[1]][1] + self._min_y)])
 
                 if line.within(self._input_geom) and len(line.coords[0]) > 1:
                     lst_lines.append(line)
@@ -162,15 +168,15 @@ class Centerline(MultiLineString):
             [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
 
         """
-        STARTPOINT = [line.xy[0][0] - self._minx, line.xy[1][0] - self._miny]
-        ENDPOINT = [line.xy[0][-1] - self._minx, line.xy[1][-1] - self._miny]
+        STARTPOINT = [line.xy[0][0] - self._min_x, line.xy[1][0] - self._min_y]
+        ENDPOINT = [line.xy[0][-1] - self._min_x, line.xy[1][-1] - self._min_y]
 
         count = self._interpolation_dist
         newline = [STARTPOINT]
 
         while count < line.length:
             point = line.interpolate(count)
-            newline.append([point.x - self._minx, point.y - self._miny])
+            newline.append([point.x - self._min_x, point.y - self._min_y])
             count += self._interpolation_dist
 
         newline.append(ENDPOINT)
