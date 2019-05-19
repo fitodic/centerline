@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 from numpy import array
 from scipy.spatial import Voronoi
-from shapely.geometry import LineString, MultiLineString, MultiPolygon, Polygon
+from shapely.geometry import (
+    LineString, MultiLineString, MultiPolygon, Point, Polygon
+)
 from shapely.ops import unary_union
 
 
@@ -45,23 +47,24 @@ class Centerline(MultiLineString):
 
         if not self.input_geometry_is_valid():
             raise TypeError(
-                'Input geometry must be of type shapely.geometry.Polygon '
-                'or shapely.geometry.MultiPolygon!'
+                "Input geometry must be of type shapely.geometry.Polygon "
+                "or shapely.geometry.MultiPolygon!"
             )
 
-        self._min_x, self._min_y = self.determine_minimal_coordinates()
+        self._min_x, self._min_y = self.get_reduction_coordinates()
         self.assign_attributes_to_instance(attributes)
 
-        super(Centerline, self).__init__(lines=self._create_centerline())
+        super(Centerline, self).__init__(lines=self.construct_centerline())
 
     def input_geometry_is_valid(self):
-        if isinstance(self._input_geom, Polygon) \
-                or isinstance(self._input_geom, MultiPolygon):
+        if isinstance(self._input_geom, Polygon) or isinstance(
+            self._input_geom, MultiPolygon
+        ):
             return True
         else:
             return False
 
-    def determine_minimal_coordinates(self):
+    def get_reduction_coordinates(self):
         min_x = int(min(self._input_geom.envelope.exterior.xy[0]))
         min_y = int(min(self._input_geom.envelope.exterior.xy[1]))
         return min_x, min_y
@@ -70,7 +73,7 @@ class Centerline(MultiLineString):
         for key in attributes:
             setattr(self, key, attributes.get(key))
 
-    def _create_centerline(self):
+    def construct_centerline(self):
         """
         Calculate the centerline of a polygon.
 
@@ -83,7 +86,7 @@ class Centerline(MultiLineString):
             a union of lines that are located within the polygon.
 
         """
-        border = array(self.__densify_border())
+        border = self.get_densified_borders()
 
         vor = Voronoi(border)
         vertex = vor.vertices
@@ -109,76 +112,61 @@ class Centerline(MultiLineString):
 
         return unary_union(lst_lines)
 
-    def __densify_border(self):
-        """
-        Densify the border of a polygon.
-
-        The border is densified by a given factor (by default: 0.5).
-
-        The complexity of the polygon's geometry is evaluated in order
-        to densify the borders of its interior rings as well.
-
-        Returns:
-            list: a list of points where each point is represented by
-                a list of its reduced coordinates
-
-        Example:
-            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
-
-        """
-        if isinstance(self._input_geom, MultiPolygon):
-            polygons = [polygon for polygon in self._input_geom]
-        else:
-            polygons = [self._input_geom]
-
+    def get_densified_borders(self):
+        polygons = self.extract_polygons_from_input_geometry()
         points = []
         for polygon in polygons:
-            if len(polygon.interiors) == 0:
-                exterior = LineString(polygon.exterior)
-                points += self.__fixed_interpolation(exterior)
+            points += self._get_interpolated_boundary(polygon.exterior)
+            if self._polygon_has_interior_rings(polygon):
+                for _, interior in enumerate(polygon.interiors):
+                    points += self._get_interpolated_boundary(interior)
 
-            else:
-                exterior = LineString(polygon.exterior)
-                points += self.__fixed_interpolation(exterior)
+        return array(points)
 
-                for j in range(len(polygon.interiors)):
-                    interior = LineString(polygon.interiors[j])
-                    points += self.__fixed_interpolation(interior)
+    def extract_polygons_from_input_geometry(self):
+        if isinstance(self._input_geom, MultiPolygon):
+            return (polygon for polygon in self._input_geom)
+        else:
+            return (self._input_geom,)
 
-        return points
+    def _polygon_has_interior_rings(self, polygon):
+        return len(polygon.interiors) > 0
 
-    def __fixed_interpolation(self, line):
-        """
-        Place additional points on the border at the specified distance.
+    def _get_interpolated_boundary(self, boundary):
+        line = LineString(boundary)
 
-        By default the distance is 0.5 (meters) which means that the first
-        point will be placed 0.5 m from the starting point, the second
-        point will be placed at the distance of 1.0 m from the first
-        point, etc. The loop breaks when the summarized distance exceeds
-        the length of the line.
+        first_point = self._get_coordinates_of_first_point(line)
+        last_point = self._get_coordinates_of_last_point(line)
 
-        Args:
-            line (shapely.geometry.LineString): object
+        intermediate_points = self._get_coordinates_of_interpolated_points(
+            line
+        )
 
-        Returns:
-            list: a list of points where each point is represented by
-                a list of its reduced coordinates
+        return [first_point] + intermediate_points + [last_point]
 
-        Example:
-            [[X1, Y1], [X2, Y2], ..., [Xn, Yn]
+    def _get_coordinates_of_first_point(self, linestring):
+        return self._create_point_with_reduced_coordinates(
+            x=linestring.xy[0][0], y=linestring.xy[1][0]
+        )
 
-        """
-        STARTPOINT = [line.xy[0][0] - self._min_x, line.xy[1][0] - self._min_y]
-        ENDPOINT = [line.xy[0][-1] - self._min_x, line.xy[1][-1] - self._min_y]
+    def _get_coordinates_of_last_point(self, linestring):
+        return self._create_point_with_reduced_coordinates(
+            x=linestring.xy[0][-1], y=linestring.xy[1][-1]
+        )
 
-        count = self._interpolation_dist
-        newline = [STARTPOINT]
+    def _get_coordinates_of_interpolated_points(self, linestring):
+        intermediate_points = []
+        interpolation_distance = self._interpolation_dist
+        line_length = linestring.length
+        while interpolation_distance < line_length:
+            point = linestring.interpolate(interpolation_distance)
+            reduced_point = self._create_point_with_reduced_coordinates(
+                x=point.x, y=point.y
+            )
+            intermediate_points.append(reduced_point)
+            interpolation_distance += self._interpolation_dist
 
-        while count < line.length:
-            point = line.interpolate(count)
-            newline.append([point.x - self._min_x, point.y - self._min_y])
-            count += self._interpolation_dist
+        return intermediate_points
 
-        newline.append(ENDPOINT)
-
-        return newline
+    def _create_point_with_reduced_coordinates(self, x, y):
+        return [x - self._min_x, y - self._min_y]
