@@ -15,7 +15,10 @@ def test_shp_to_shp_too_large_density_raises_error(
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
     output = script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_shp, "13.5"
+        "create_centerlines.py",
+        input_polygon_shp,
+        output_centerline_shp,
+        "13.5",
     )
 
     assert (
@@ -32,7 +35,7 @@ def test_shp_to_shp_records_geom_type_is_multilinestring(
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
     script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_shp
+        "create_centerlines.py", input_polygon_shp, output_centerline_shp
     )
 
     with fiona.open(output_centerline_shp) as dst:
@@ -48,7 +51,7 @@ def test_shp_to_shp_record_count_is_3(
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
     script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_shp
+        "create_centerlines.py", input_polygon_shp, output_centerline_shp
     )
 
     with fiona.open(output_centerline_shp) as dst:
@@ -63,7 +66,7 @@ def test_shp_to_geojson_records_geom_type_is_multilinestring(
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_geojson = create_output_centerline_file("geojson")
     script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_geojson
+        "create_centerlines.py", input_polygon_shp, output_centerline_geojson
     )
 
     with fiona.open(output_centerline_geojson) as dst:
@@ -79,7 +82,7 @@ def test_shp_to_geojson_record_count_is_3(
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_geojson = create_output_centerline_file("geojson")
     script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_geojson
+        "create_centerlines.py", input_polygon_shp, output_centerline_geojson
     )
 
     with fiona.open(output_centerline_geojson) as dst:
@@ -93,7 +96,7 @@ def test_invalid_destination_file_format(
     output_centerline_file = create_output_centerline_file("unknown")
 
     output = script_runner.run(
-        "create_centerlines", input_polygon_shp, output_centerline_file
+        "create_centerlines.py", input_polygon_shp, output_centerline_file
     )
     assert (
         "No driver found for the following file extension: unknown"
@@ -110,7 +113,9 @@ def test_input_file_does_not_contain_polygons(
     output_centerline_geojson = create_output_centerline_file("geojson")
 
     script_runner.run(
-        "create_centerlines", input_points_geojson, output_centerline_geojson
+        "create_centerlines.py",
+        input_points_geojson,
+        output_centerline_geojson,
     )
 
     with fiona.open(output_centerline_geojson) as dst:

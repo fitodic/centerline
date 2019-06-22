@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import argparse
 
 from centerline.io import create_centerlines

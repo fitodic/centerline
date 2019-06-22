@@ -8,7 +8,7 @@ This library provides a command-line tool for creating centerlines from a vector
 
 .. code:: bash
 
-    $ create_centerlines -h
+    $ create_centerlines.py -h
     usage: create_centerlines [-h] SRC DEST [BORDENS]
 
     Calculate the centerline of a polygon
@@ -26,7 +26,7 @@ The `create_centerlines` script is file format agnostic, meaning you should be a
 
 .. code:: bash
 
-    $ create_centerlines input.shp output.geojson
+    $ create_centerlines.py input.shp output.geojson
 
 
 Python
