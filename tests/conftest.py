@@ -10,8 +10,9 @@ from shapely import geometry
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 TMP_DIR = os.path.join(TESTS_DIR, "tmp")
-SHP_DIR = os.path.join(TESTS_DIR, "data", "shp")
-GEOJSON_DIR = os.path.join(TESTS_DIR, "data", "geojson")
+TEST_DATA_DIR = os.path.join(TESTS_DIR, "data")
+SHP_DIR = os.path.join(TEST_DATA_DIR, "shp")
+GEOJSON_DIR = os.path.join(TEST_DATA_DIR, "geojson")
 
 
 @pytest.fixture
@@ -77,7 +78,7 @@ def create_polygon():
 def create_input_file():
     def _create_input_file(filename, extension):
         extension_directories = {"shp": SHP_DIR, "geojson": GEOJSON_DIR}
-        directory = extension_directories[extension.lower()]
+        directory = extension_directories.get(extension.lower(), TEST_DATA_DIR)
         return os.path.join(
             directory,
             "{filename}.{extension}".format(
