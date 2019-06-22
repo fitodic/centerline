@@ -2,46 +2,41 @@
 
 from __future__ import unicode_literals
 
-import os
-from unittest import TestCase
+import pytest
 
-from shapely import geometry
-
+from centerline.exceptions import InvalidInputTypeError
 from centerline.utils import get_ogr_driver
 
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-SHP_DIR = os.path.join(TESTS_DIR, 'data', 'shp')
-GEOJSON_DIR = os.path.join(TESTS_DIR, 'data', 'geojson')
+
+def test__driver_name__with_shp__returns_esri_shapefile(create_input_file):
+    EXPECTED_DRIVER_NAME = "ESRI Shapefile"
+
+    input_file = create_input_file("polygons", "shp")
+    driver = get_ogr_driver(input_file)
+
+    assert driver.GetName() == EXPECTED_DRIVER_NAME
 
 
-class TestGetOgrDriver(TestCase):
+def test__driver_name__with_json__returns_geojson(create_input_file):
+    EXPECTED_DRIVER_NAME = "GeoJSON"
+    input_file = "example.json"
 
-    def test__driver_name__with_shp__returns_esri_shapefile(self):
-        FILE_EXTENSION = 'example.shp'
-        EXPECTED_DRIVER_NAME = 'ESRI Shapefile'
+    driver = get_ogr_driver(input_file)
 
-        driver = get_ogr_driver(FILE_EXTENSION)
+    assert driver.GetName() == EXPECTED_DRIVER_NAME
 
-        self.assertEqual(driver.GetName(), EXPECTED_DRIVER_NAME)
 
-    def test__driver_name__with_json__returns_geojson(self):
-        FILE_EXTENSION = 'example.json'
-        EXPECTED_DRIVER_NAME = 'GeoJSON'
+def test__driver_name__with_geojson__returns_geojson(create_input_file):
+    EXPECTED_DRIVER_NAME = "GeoJSON"
+    input_file = create_input_file("polygons", "geojson")
 
-        driver = get_ogr_driver(FILE_EXTENSION)
+    driver = get_ogr_driver(input_file)
 
-        self.assertEqual(driver.GetName(), EXPECTED_DRIVER_NAME)
+    assert driver.GetName() == EXPECTED_DRIVER_NAME
 
-    def test__driver_name__with_geojson__returns_geojson(self):
-        FILE_EXTENSION = 'example.geojson'
-        EXPECTED_DRIVER_NAME = 'GeoJSON'
 
-        driver = get_ogr_driver(FILE_EXTENSION)
+def test__with_unknown_extension__returns_valueerror():
+    input_file = "example.unknown"
 
-        self.assertEqual(driver.GetName(), EXPECTED_DRIVER_NAME)
-
-    def test__with_unknown_extension__returns_valueerror(self):
-        FILE_EXTENSION = 'example.unknown'
-
-        with self.assertRaises(ValueError):
-            get_ogr_driver(FILE_EXTENSION)
+    with pytest.raises(InvalidInputTypeError):
+        get_ogr_driver(input_file)

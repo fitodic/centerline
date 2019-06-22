@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import pytest
 from shapely import geometry
 
+from centerline.exceptions import InvalidInputTypeError, TooFewRidgesError
 from centerline.main import Centerline
 
 
@@ -32,31 +33,31 @@ def test_creating_centerline_from_multipolygon_returns_centerline(
 
 
 def test_creating_centerline_from_point_raises_typeerror(point):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidInputTypeError):
         Centerline(point)
 
 
 def test_creating_centerline_from_multipoint_raises_typeerror(multipoint):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidInputTypeError):
         Centerline(multipoint)
 
 
 def test_creating_centerline_from_linestring_raises_typeerror(linestring):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidInputTypeError):
         Centerline(linestring)
 
 
 def test_creating_centerline_from_multilinestring_raises_typeerror(
     multilinestring
 ):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidInputTypeError):
         Centerline(multilinestring)
 
 
 def test_creating_centerline_from_geometry_collection_raises_typeerror(
     geometry_collection
 ):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidInputTypeError):
         Centerline(geometry_collection)
 
 
@@ -64,7 +65,7 @@ def test_creating_centerline_using_too_large_interp_dist_raises_runtimeerror(
     create_polygon
 ):
     polygon = create_polygon(exterior=[[0, 0], [10, 0], [10, 10], [0, 10]])
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TooFewRidgesError):
         Centerline(polygon, 10)
 
     centerline = Centerline(polygon, 5)

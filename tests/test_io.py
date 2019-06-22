@@ -2,116 +2,98 @@
 
 from __future__ import unicode_literals
 
-import logging
-import os
 import shutil
-from unittest import TestCase
 
 import fiona
+import pytest
 
+from centerline.exceptions import InvalidInputTypeError, TooFewRidgesError
 from centerline.io import create_centerlines
 
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-TMP_DIR = os.path.join(TESTS_DIR, 'tmp')
-SHP_DIR = os.path.join(TESTS_DIR, 'data', 'shp')
-GEOJSON_DIR = os.path.join(TESTS_DIR, 'data', 'geojson')
+
+def test_shp_to_shp_too_large_density_raises_error(
+    create_input_file, create_output_centerline_file, caplog
+):
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_shp = create_output_centerline_file("shp")
+    create_centerlines(
+        src=input_polygon_shp, dst=output_centerline_shp, density=13.5
+    )
+    assert TooFewRidgesError.default_message in caplog.messages
 
 
-class TestCreateCenterlines(TestCase):
+def test_shp_to_shp_records_geom_type_is_multilinestring(
+    create_input_file, create_output_centerline_file
+):
+    EXPECTED_TYPE = "MultiLineString"
 
-    def setUp(self):
-        self.INPUT_SHP = os.path.join(SHP_DIR, 'polygons.shp')
-        os.mkdir(TMP_DIR)
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_shp = create_output_centerline_file("shp")
+    create_centerlines(src=input_polygon_shp, dst=output_centerline_shp)
 
-    def tearDown(self):
-        if os.path.exists(TMP_DIR):
-            shutil.rmtree(TMP_DIR)
+    with fiona.open(output_centerline_shp) as dst:
+        for record in dst:
+            assert record.get("geometry").get("type") == EXPECTED_TYPE
 
-    def test__shp_to_shp_execution_successful_returns_None(self):
-        DST_SHP = os.path.join(TMP_DIR, 'centerlines.shp')
 
-        output = create_centerlines(src=self.INPUT_SHP, dst=DST_SHP)
-        self.assertIsNone(output)
+def test_shp_to_shp_record_count_is_3(
+    create_input_file, create_output_centerline_file
+):
+    EXPECTED_COUNT = 3
 
-    def test__shp_to_shp_too_big_density(self):
-        DST_SHP = os.path.join(TMP_DIR, 'centerlines.shp')
-        saved_rows = []
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_shp = create_output_centerline_file("shp")
+    create_centerlines(src=input_polygon_shp, dst=output_centerline_shp)
 
-        def fake_warning(s, arg=None):
-            if arg is not None:
-                s = s % arg
-            saved_rows.append(s)
+    with fiona.open(output_centerline_shp) as dst:
+        assert len(list(dst)) == EXPECTED_COUNT
 
-        orig_warning = logging.warning
-        logging.warning = fake_warning
-        create_centerlines(src=self.INPUT_SHP, dst=DST_SHP, density=11)
-        self.assertEqual(
-            saved_rows[0],
-            "ignoring record that could not be processed: " +
-            "Number of produced ridges is too small: " +
-            "0, this might be caused by too large " +
-            "interpolation distance.",
-        )
-        logging.warning = orig_warning
 
-    def test__shp_to_shp_records_geom_type_is_multilinestring(self):
-        EXPECTED_TYPE = 'MultiLineString'
+def test_shp_to_geojson_records_geom_type_is_multilinestring(
+    create_input_file, create_output_centerline_file
+):
+    EXPECTED_TYPE = "MultiLineString"
 
-        DST_SHP = os.path.join(TMP_DIR, 'centerlines.shp')
-        create_centerlines(src=self.INPUT_SHP, dst=DST_SHP)
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_geojson = create_output_centerline_file("geojson")
+    create_centerlines(src=input_polygon_shp, dst=output_centerline_geojson)
 
-        with fiona.open(DST_SHP) as dst:
-            for record in dst:
-                self.assertEqual(
-                    record.get('geometry').get('type'), EXPECTED_TYPE)
+    with fiona.open(output_centerline_geojson) as dst:
+        for record in dst:
+            assert record.get("geometry").get("type") == EXPECTED_TYPE
 
-    def test__shp_to_shp_record_count_is_3(self):
-        EXPECTED_COUNT = 3
 
-        DST_SHP = os.path.join(TMP_DIR, 'centerlines.shp')
-        create_centerlines(src=self.INPUT_SHP, dst=DST_SHP)
+def test_shp_to_geojson_record_count_is_3(
+    create_input_file, create_output_centerline_file
+):
+    EXPECTED_COUNT = 3
 
-        with fiona.open(DST_SHP) as dst:
-            self.assertEqual(len(list(dst)), EXPECTED_COUNT)
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_geojson = create_output_centerline_file("geojson")
+    create_centerlines(src=input_polygon_shp, dst=output_centerline_geojson)
 
-    def test__shp_to_geojson_execution_successful_returns_None(self):
-        DST_GEOJSON = os.path.join(TMP_DIR, 'centerlines.geojson')
+    with fiona.open(output_centerline_geojson) as dst:
+        assert len(list(dst)) == EXPECTED_COUNT
 
-        output = create_centerlines(src=self.INPUT_SHP, dst=DST_GEOJSON)
-        self.assertIsNone(output)
 
-    def test__shp_to_geojson_records_geom_type_is_multilinestring(self):
-        EXPECTED_TYPE = 'MultiLineString'
+def test_invalid_destination_file_format(
+    create_input_file, create_output_centerline_file
+):
+    input_polygon_shp = create_input_file("polygons", "shp")
+    output_centerline_file = create_output_centerline_file("unknown")
+    with pytest.raises(InvalidInputTypeError):
+        create_centerlines(src=input_polygon_shp, dst=output_centerline_file)
 
-        DST_GEOJSON = os.path.join(TMP_DIR, 'centerlines.geojson')
-        create_centerlines(src=self.INPUT_SHP, dst=DST_GEOJSON)
 
-        with fiona.open(DST_GEOJSON) as dst:
-            for record in dst:
-                self.assertEqual(
-                    record.get('geometry').get('type'), EXPECTED_TYPE)
+def test_input_file_does_not_contain_polygons(
+    create_input_file, create_output_centerline_file
+):
+    EXPECTED_COUNT = 0
 
-    def test__shp_to_geojson_record_count_is_3(self):
-        EXPECTED_COUNT = 3
+    input_points_geojson = create_input_file("points", "geojson")
+    output_centerline_geojson = create_output_centerline_file("geojson")
 
-        DST_GEOJSON = os.path.join(TMP_DIR, 'centerlines.geojson')
-        create_centerlines(src=self.INPUT_SHP, dst=DST_GEOJSON)
+    create_centerlines(src=input_points_geojson, dst=output_centerline_geojson)
 
-        with fiona.open(DST_GEOJSON) as dst:
-            self.assertEqual(len(list(dst)), EXPECTED_COUNT)
-
-    def test_invalid_destination_file_format(self):
-        DST_SHP = os.path.join(TMP_DIR, 'centerlines.something')
-        with self.assertRaises(ValueError):
-            create_centerlines(src=self.INPUT_SHP, dst=DST_SHP)
-
-    def test__input_file_does_not_contain_polygons(self):
-        EXPECTED_COUNT = 0
-
-        INPUT_FILE = os.path.join(GEOJSON_DIR, 'points.geojson')
-        DST_GEOJSON = os.path.join(TMP_DIR, 'centerlines.geojson')
-
-        create_centerlines(src=INPUT_FILE, dst=DST_GEOJSON)
-
-        with fiona.open(DST_GEOJSON) as dst:
-            self.assertEqual(len(list(dst)), EXPECTED_COUNT)
+    with fiona.open(output_centerline_geojson) as dst:
+        assert len(list(dst)) == EXPECTED_COUNT

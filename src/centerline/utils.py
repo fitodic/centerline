@@ -6,6 +6,8 @@ import os
 
 from osgeo import gdal, ogr
 
+from .exceptions import InvalidInputTypeError
+
 # Enable GDAL/OGR exceptions
 gdal.UseExceptions()
 
@@ -39,4 +41,4 @@ def get_ogr_driver(filepath):
     else:
         msg = 'No driver found for the following file extension: {}'.format(
             EXTENSION)
-        raise ValueError(msg)
+        raise InvalidInputTypeError(msg)

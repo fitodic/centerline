@@ -7,6 +7,7 @@ import logging
 import fiona
 from shapely.geometry import mapping, shape
 
+from .exceptions import InvalidInputTypeError, TooFewRidgesError
 from .main import Centerline
 from .utils import get_ogr_driver
 
@@ -32,10 +33,7 @@ def create_centerlines(src, dst, density=0.5):
         None
 
     """
-    try:
-        DST_DRIVER = get_ogr_driver(filepath=dst)
-    except ValueError:
-        raise
+    DST_DRIVER = get_ogr_driver(filepath=dst)
 
     with fiona.Env():
         with fiona.open(src, mode='r') as source:
@@ -59,14 +57,8 @@ def create_centerlines(src, dst, density=0.5):
                             interpolation_dist=density,
                             **attributes
                         )
-                    except TypeError as error:
+                    except (InvalidInputTypeError, TooFewRidgesError) as error:
                         logging.warning(error)
-                        continue
-                    except RuntimeError as err:
-                        logging.warning(
-                            "ignoring record that could not be processed: %s",
-                            err
-                        )
                         continue
 
                     centerline_dict = {

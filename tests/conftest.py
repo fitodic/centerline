@@ -2,8 +2,16 @@
 
 from __future__ import unicode_literals
 
+import os
+import shutil
+
 import pytest
 from shapely import geometry
+
+TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
+TMP_DIR = os.path.join(TESTS_DIR, "tmp")
+SHP_DIR = os.path.join(TESTS_DIR, "data", "shp")
+GEOJSON_DIR = os.path.join(TESTS_DIR, "data", "geojson")
 
 
 @pytest.fixture
@@ -63,3 +71,28 @@ def create_polygon():
         return geometry.Polygon(exterior, holes)
 
     return _create_polygon
+
+
+@pytest.fixture
+def create_input_file():
+    def _create_input_file(filename, extension):
+        extension_directories = {"shp": SHP_DIR, "geojson": GEOJSON_DIR}
+        directory = extension_directories[extension.lower()]
+        return os.path.join(
+            directory,
+            "{filename}.{extension}".format(
+                filename=filename, extension=extension
+            ),
+        )
+
+    os.mkdir(TMP_DIR)
+    yield _create_input_file
+    shutil.rmtree(TMP_DIR)
+
+
+@pytest.fixture
+def create_output_centerline_file():
+    def _create_output_centerline_file(extension):
+        return os.path.join(TMP_DIR, "centerlines.{}".format(extension))
+
+    return _create_output_centerline_file

@@ -9,6 +9,8 @@ from shapely.geometry import (
 )
 from shapely.ops import unary_union
 
+from . import exceptions
+
 
 class Centerline(MultiLineString):
     """
@@ -46,10 +48,7 @@ class Centerline(MultiLineString):
         self._interpolation_dist = abs(interpolation_dist)
 
         if not self.input_geometry_is_valid():
-            raise TypeError(
-                "Input geometry must be of type shapely.geometry.Polygon "
-                "or shapely.geometry.MultiPolygon!"
-            )
+            raise exceptions.InvalidInputTypeError
 
         self._min_x, self._min_y = self.get_reduction_coordinates()
         self.assign_attributes_to_instance(attributes)
@@ -86,31 +85,46 @@ class Centerline(MultiLineString):
             a union of lines that are located within the polygon.
 
         """
-        border = self.get_densified_borders()
+        vertices, ridges = self._get_voronoi_vertices_and_ridges()
+        linestrings = []
+        for ridge in ridges:
+            if self.ridge_is_finite(ridge):
+                starting_point = self._create_point_with_restored_coordinates(
+                    x=vertices[ridge[0]][0], y=vertices[ridge[0]][1]
+                )
+                ending_point = self._create_point_with_restored_coordinates(
+                    x=vertices[ridge[1]][0], y=vertices[ridge[1]][1]
+                )
+                linestring = LineString((starting_point, ending_point))
 
-        vor = Voronoi(border)
-        vertex = vor.vertices
+                if self.linestring_is_within_input_geometry(linestring):
+                    linestrings.append(linestring)
 
-        lst_lines = []
-        for j, ridge in enumerate(vor.ridge_vertices):
-            if -1 not in ridge:
-                line = LineString([
-                    (vertex[ridge[0]][0] + self._min_x,
-                     vertex[ridge[0]][1] + self._min_y),
-                    (vertex[ridge[1]][0] + self._min_x,
-                     vertex[ridge[1]][1] + self._min_y)])
+        if len(linestrings) < 2:
+            raise exceptions.TooFewRidgesError
 
-                if line.within(self._input_geom) and len(line.coords[0]) > 1:
-                    lst_lines.append(line)
+        return unary_union(linestrings)
 
-        nr_lines = len(lst_lines)
-        if nr_lines < 2:
-            raise RuntimeError((
-                "Number of produced ridges is too small: {}"
-                ", this might be caused by too large interpolation distance."
-            ).format(nr_lines))
+    def _get_voronoi_vertices_and_ridges(self):
+        borders = self.get_densified_borders()
 
-        return unary_union(lst_lines)
+        voronoi_diagram = Voronoi(borders)
+        vertices = voronoi_diagram.vertices
+        ridges = voronoi_diagram.ridge_vertices
+
+        return vertices, ridges
+
+    def ridge_is_finite(self, ridge):
+        return -1 not in ridge
+
+    def _create_point_with_restored_coordinates(self, x, y):
+        return (x + self._min_x, y + self._min_y)
+
+    def linestring_is_within_input_geometry(self, linestring):
+        return (
+            linestring.within(self._input_geom)
+            and len(linestring.coords[0]) > 1
+        )
 
     def get_densified_borders(self):
         polygons = self.extract_polygons_from_input_geometry()
@@ -118,7 +132,7 @@ class Centerline(MultiLineString):
         for polygon in polygons:
             points += self._get_interpolated_boundary(polygon.exterior)
             if self._polygon_has_interior_rings(polygon):
-                for _, interior in enumerate(polygon.interiors):
+                for interior in polygon.interiors:
                     points += self._get_interpolated_boundary(interior)
 
         return array(points)
@@ -169,4 +183,4 @@ class Centerline(MultiLineString):
         return intermediate_points
 
     def _create_point_with_reduced_coordinates(self, x, y):
-        return [x - self._min_x, y - self._min_y]
+        return (x - self._min_x, y - self._min_y)
