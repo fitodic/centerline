@@ -35,9 +35,9 @@ Roads, rivers and similar linear structures are often represented by long and co
 
    chapters/installation.rst
    chapters/usage.rst
+   modules/centerline.rst
    chapters/faq.rst
    chapters/changelog.rst
-   modules/centerline.rst
 
 Indices and tables
 ==================
