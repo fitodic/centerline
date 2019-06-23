@@ -55,7 +55,12 @@ def test_shp_to_shp_too_large_density_raises_error(
     runner = CliRunner()
     result = runner.invoke(
         create_centerlines,
-        [input_polygon_shp, output_centerline_shp, "--density", 13.5],
+        [
+            input_polygon_shp,
+            output_centerline_shp,
+            "--interpolation-distance",
+            13.5,
+        ],
     )
 
     assert (

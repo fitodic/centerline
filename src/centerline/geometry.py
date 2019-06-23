@@ -5,7 +5,11 @@ from __future__ import unicode_literals
 from numpy import array
 from scipy.spatial import Voronoi
 from shapely.geometry import (
-    LineString, MultiLineString, MultiPolygon, Point, Polygon
+    LineString,
+    MultiLineString,
+    MultiPolygon,
+    Point,
+    Polygon
 )
 from shapely.ops import unary_union
 
@@ -13,39 +17,26 @@ from . import exceptions
 
 
 class Centerline(MultiLineString):
-    """
-    The polygon's skeleton.
+    def __init__(
+        self, input_geometry, interpolation_distance=0.5, **attributes
+    ):
+        """Create a centerline object.
 
-    The polygon's attributes are copied and set as the centerline's
-    attributes. The rest of the attributes are inherited from the
-    MultiLineString class.
+        The ``attributes`` are copied and set as the centerline's
+        attributes.
 
-    Attributes:
-        geoms (shapely.geometry.base.GeometrySequence): A sequence of
-            LineStrings
-
-    """
-
-    def __init__(self, input_geom, interpolation_dist=0.5, **attributes):
+        :param input_geometry: input geometry
+        :type input_geometry: shapely.geometry.Polygon or
+            shapely.geometry.MultiPolygon
+        :param interpolation_distance: densify the input geometry's
+            border by placing additional points at this distance,
+            defaults to 0.5 [meter]
+        :type interpolation_distance: float, optional
+        :raises exceptions.InvalidInputTypeError: input geometry is not
+            of type ``Polygon`` or ``MultiPolygon``
         """
-        Create a centerline object.
-
-        The values provided under `attributes` are used for creating
-        the object's attributes.
-
-        Args:
-            input_geom (shapely.geometry.Polygon): shapely geometry
-            interpolation_dist (:obj:`float`, optional): interpolation
-                distance. Defaults to 0.5 (meters).
-            attributes (dict): The object's attributes that should be
-                copied to the new Centerline object
-
-        Raises:
-            ValueError: invalid input geometry
-
-        """
-        self._input_geom = input_geom
-        self._interpolation_dist = abs(interpolation_dist)
+        self._input_geometry = input_geometry
+        self._interpolation_distance = abs(interpolation_distance)
 
         if not self.input_geometry_is_valid():
             raise exceptions.InvalidInputTypeError
@@ -56,16 +47,16 @@ class Centerline(MultiLineString):
         super(Centerline, self).__init__(lines=self.construct_centerline())
 
     def input_geometry_is_valid(self):
-        if isinstance(self._input_geom, Polygon) or isinstance(
-            self._input_geom, MultiPolygon
+        if isinstance(self._input_geometry, Polygon) or isinstance(
+            self._input_geometry, MultiPolygon
         ):
             return True
         else:
             return False
 
     def get_reduction_coordinates(self):
-        min_x = int(min(self._input_geom.envelope.exterior.xy[0]))
-        min_y = int(min(self._input_geom.envelope.exterior.xy[1]))
+        min_x = int(min(self._input_geometry.envelope.exterior.xy[0]))
+        min_y = int(min(self._input_geometry.envelope.exterior.xy[1]))
         return min_x, min_y
 
     def assign_attributes_to_instance(self, attributes):
@@ -73,18 +64,6 @@ class Centerline(MultiLineString):
             setattr(self, key, attributes.get(key))
 
     def construct_centerline(self):
-        """
-        Calculate the centerline of a polygon.
-
-        Densifies the border of a polygon which is then represented by a Numpy
-        array of points necessary for creating the Voronoi diagram. Once the
-        diagram is created, the ridges located within the polygon are
-        joined and returned.
-
-        Returns:
-            a union of lines that are located within the polygon.
-
-        """
         vertices, ridges = self._get_voronoi_vertices_and_ridges()
         linestrings = []
         for ridge in ridges:
@@ -122,7 +101,7 @@ class Centerline(MultiLineString):
 
     def linestring_is_within_input_geometry(self, linestring):
         return (
-            linestring.within(self._input_geom)
+            linestring.within(self._input_geometry)
             and len(linestring.coords[0]) > 1
         )
 
@@ -138,10 +117,10 @@ class Centerline(MultiLineString):
         return array(points)
 
     def extract_polygons_from_input_geometry(self):
-        if isinstance(self._input_geom, MultiPolygon):
-            return (polygon for polygon in self._input_geom)
+        if isinstance(self._input_geometry, MultiPolygon):
+            return (polygon for polygon in self._input_geometry)
         else:
-            return (self._input_geom,)
+            return (self._input_geometry,)
 
     def _polygon_has_interior_rings(self, polygon):
         return len(polygon.interiors) > 0
@@ -170,7 +149,7 @@ class Centerline(MultiLineString):
 
     def _get_coordinates_of_interpolated_points(self, linestring):
         intermediate_points = []
-        interpolation_distance = self._interpolation_dist
+        interpolation_distance = self._interpolation_distance
         line_length = linestring.length
         while interpolation_distance < line_length:
             point = linestring.interpolate(interpolation_distance)
@@ -178,7 +157,7 @@ class Centerline(MultiLineString):
                 x=point.x, y=point.y
             )
             intermediate_points.append(reduced_point)
-            interpolation_distance += self._interpolation_dist
+            interpolation_distance += self._interpolation_distance
 
         return intermediate_points
 

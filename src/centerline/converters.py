@@ -21,30 +21,38 @@ gdal.UseExceptions()
 @click.argument("src", nargs=1, type=click.Path(exists=True))
 @click.argument("dst", nargs=1, type=click.Path(exists=False))
 @click.option(
-    "-d", "--density", default=0.5, help="Border density.", show_default=True
+    "--interpolation-distance",
+    default=0.5,
+    show_default=True,
+    help=(
+        "Densify the input geometry's border by placing additional "
+        "points at this distance"
+    ),
 )
-def create_centerlines(src, dst, density=0.5):
+def create_centerlines(src, dst, interpolation_distance=0.5):
     """Convert the geometries from the ``src`` file to centerlines in
     the ``dst`` file.
 
-    Use the ``density`` parameter to adjust the level of detail you want
-    the centerlines to be produced with.
+    Use the ``interpolation_distance`` parameter to adjust the level of
+    detail you want the centerlines to be produced with.
 
     Only polygons and multipolygons are converted to centerlines,
     whereas the other geometries are skipped. The polygon's attributes
     are copied to its ``Centerline`` object.
 
-    If the ``density`` factor does not suit the polygon's geometry, the
-    ``TooFewRidgesError`` error is logged as a warning. You should try
-    readjusting the ``density`` factor and rerun the command.
+    If the ``interpolation_distance`` factor does not suit the polygon's
+    geometry, the ``TooFewRidgesError`` error is logged as a warning.
+    You should try readjusting the ``interpolation_distance`` factor and
+    rerun the command.
 
     :param src: path to the file containing input geometries
     :type src: str
     :param dst: path to the file that will contain the centerlines
     :type dst: str
-    :param density: the border density factor that will be used for
-        creating centerlines, defaults to 0.5 [m].
-    :type density: float, optional
+    :param interpolation_distance: densify the input geometry's
+        border by placing additional points at this distance, defaults
+        to 0.5 [meter].
+    :type interpolation_distance: float, optional
     :return: ``dst`` file is generated
     :rtype: None
     """
@@ -69,9 +77,7 @@ def create_centerlines(src, dst, density=0.5):
                     attributes = record.get("properties")
                     try:
                         centerline_obj = Centerline(
-                            input_geom=input_geom,
-                            interpolation_dist=density,
-                            **attributes
+                            input_geom, interpolation_distance, **attributes
                         )
                     except (InvalidInputTypeError, TooFewRidgesError) as error:
                         logging.warning(error)
@@ -92,19 +98,6 @@ def create_centerlines(src, dst, density=0.5):
 
 
 def get_ogr_driver(filepath):
-    """
-    Get the OGR driver from the provided file extension.
-
-    Args:
-        file_extension (str): file extension
-
-    Returns:
-        osgeo.ogr.Driver
-
-    Raises:
-        ValueError: no driver is found
-
-    """
     filename, file_extension = os.path.splitext(filepath)
     EXTENSION = file_extension[1:]
 
