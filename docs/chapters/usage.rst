@@ -8,7 +8,7 @@ This library provides the ``create_centerlines`` command-line script for creatin
 
 .. code:: bash
 
-    $ create_centerlines.py input.shp output.geojson
+    $ create_centerlines input.shp output.geojson
 
 
 Python
