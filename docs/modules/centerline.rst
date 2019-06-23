@@ -1,4 +1,4 @@
-centerline package
+centerline's API
 ==================
 
 Module contents
@@ -12,26 +12,26 @@ Module contents
 Submodules
 ----------
 
-centerline\.io module
----------------------
+centerline\.exceptions module
+-----------------------------
 
-.. automodule:: centerline.io
+.. automodule:: centerline.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
 
-centerline\.main module
------------------------
+centerline\.converters module
+-----------------------------
 
-.. automodule:: centerline.main
+.. automodule:: centerline.converters
     :members:
     :undoc-members:
     :show-inheritance:
 
-centerline\.utils module
-------------------------
+centerline\.geometry module
+---------------------------
 
-.. automodule:: centerline.utils
+.. automodule:: centerline.geometry
     :members:
     :undoc-members:
     :show-inheritance:

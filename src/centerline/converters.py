@@ -98,6 +98,14 @@ def create_centerlines(src, dst, interpolation_distance=0.5):
 
 
 def get_ogr_driver(filepath):
+    """Get the OGR driver based on the file's extensions.
+
+    :param filepath: file's path
+    :type filepath: str
+    :raises InvalidInputTypeError: unsupported extension
+    :return: OGR driver
+    :rtype: osgeo.ogr.Driver
+    """
     filename, file_extension = os.path.splitext(filepath)
     EXTENSION = file_extension[1:]
 
