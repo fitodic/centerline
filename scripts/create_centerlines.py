@@ -1,6 +1,6 @@
 import argparse
 
-from centerline.io import create_centerlines
+from centerline.converters import create_centerlines
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

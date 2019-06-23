@@ -3,13 +3,17 @@
 from __future__ import unicode_literals
 
 import logging
+import os
 
 import fiona
+from osgeo import gdal, ogr
 from shapely.geometry import mapping, shape
 
 from .exceptions import InvalidInputTypeError, TooFewRidgesError
-from .main import Centerline
-from .utils import get_ogr_driver
+from .geometry import Centerline
+
+# Enable GDAL/OGR exceptions
+gdal.UseExceptions()
 
 
 def create_centerlines(src, dst, density=0.5):
@@ -36,21 +40,22 @@ def create_centerlines(src, dst, density=0.5):
     DST_DRIVER = get_ogr_driver(filepath=dst)
 
     with fiona.Env():
-        with fiona.open(src, mode='r') as source:
+        with fiona.open(src, mode="r") as source:
             SCHEMA = source.schema.copy()
-            SCHEMA.update({'geometry': 'MultiLineString'})
+            SCHEMA.update({"geometry": "MultiLineString"})
             with fiona.open(
-                    dst,
-                    mode='w',
-                    driver=DST_DRIVER.GetName(),
-                    schema=SCHEMA,
-                    crs=source.crs,
-                    encoding=source.encoding) as destination:
+                dst,
+                mode="w",
+                driver=DST_DRIVER.GetName(),
+                schema=SCHEMA,
+                crs=source.crs,
+                encoding=source.encoding,
+            ) as destination:
                 for record in source:
-                    geom = record.get('geometry')
+                    geom = record.get("geometry")
                     input_geom = shape(geom)
 
-                    attributes = record.get('properties')
+                    attributes = record.get("properties")
                     try:
                         centerline_obj = Centerline(
                             input_geom=input_geom,
@@ -62,14 +67,47 @@ def create_centerlines(src, dst, density=0.5):
                         continue
 
                     centerline_dict = {
-                        'geometry': mapping(centerline_obj),
-                        'properties': {
+                        "geometry": mapping(centerline_obj),
+                        "properties": {
                             k: v
                             for k, v in centerline_obj.__dict__.items()
                             if k in attributes.keys()
-                        }
+                        },
                     }
 
                     destination.write(centerline_dict)
 
     return None
+
+
+def get_ogr_driver(filepath):
+    """
+    Get the OGR driver from the provided file extension.
+
+    Args:
+        file_extension (str): file extension
+
+    Returns:
+        osgeo.ogr.Driver
+
+    Raises:
+        ValueError: no driver is found
+
+    """
+    filename, file_extension = os.path.splitext(filepath)
+    EXTENSION = file_extension[1:]
+
+    ogr_driver_count = ogr.GetDriverCount()
+    for idx in range(ogr_driver_count):
+        driver = ogr.GetDriver(idx)
+        driver_extension = driver.GetMetadataItem(str("DMD_EXTENSION")) or ""
+        driver_extensions = driver.GetMetadataItem(str("DMD_EXTENSIONS")) or ""
+
+        if EXTENSION == driver_extension or EXTENSION in driver_extensions:
+            return driver
+
+    else:
+        msg = "No driver found for the following file extension: {}".format(
+            EXTENSION
+        )
+        raise InvalidInputTypeError(msg)

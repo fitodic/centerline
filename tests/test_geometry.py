@@ -6,7 +6,7 @@ import pytest
 from shapely import geometry
 
 from centerline.exceptions import InvalidInputTypeError, TooFewRidgesError
-from centerline.main import Centerline
+from centerline.geometry import Centerline
 
 
 def test_creating_centerline_from_polygon_returns_centerline(simple_polygon):
