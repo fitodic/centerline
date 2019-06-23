@@ -6,9 +6,10 @@ import shutil
 
 import fiona
 import pytest
+from click.testing import CliRunner
 
+from centerline.converters import create_centerlines, get_ogr_driver
 from centerline.exceptions import InvalidInputTypeError
-from centerline.converters import get_ogr_driver
 
 
 def test__driver_name__with_shp__returns_esri_shapefile(create_input_file):
@@ -45,34 +46,35 @@ def test__with_unknown_extension__returns_valueerror():
         get_ogr_driver(input_file)
 
 
-@pytest.mark.script_launch_mode("subprocess")
 def test_shp_to_shp_too_large_density_raises_error(
-    create_input_file, create_output_centerline_file, caplog, script_runner
+    create_input_file, create_output_centerline_file, caplog
 ):
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
-    output = script_runner.run(
-        "create_centerlines.py",
-        input_polygon_shp,
-        output_centerline_shp,
-        "13.5",
+
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines,
+        [input_polygon_shp, output_centerline_shp, "--density", 13.5],
     )
 
     assert (
         "Number of produced ridges is too small. Please adjust your "
-        "interpolation distance." in output.stderr
+        "interpolation distance." in caplog.messages
     )
 
 
 def test_shp_to_shp_records_geom_type_is_multilinestring(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     EXPECTED_TYPE = "MultiLineString"
 
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
-    script_runner.run(
-        "create_centerlines.py", input_polygon_shp, output_centerline_shp
+
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_polygon_shp, output_centerline_shp]
     )
 
     with fiona.open(output_centerline_shp) as dst:
@@ -81,14 +83,16 @@ def test_shp_to_shp_records_geom_type_is_multilinestring(
 
 
 def test_shp_to_shp_record_count_is_3(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     EXPECTED_COUNT = 3
 
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_shp = create_output_centerline_file("shp")
-    script_runner.run(
-        "create_centerlines.py", input_polygon_shp, output_centerline_shp
+
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_polygon_shp, output_centerline_shp]
     )
 
     with fiona.open(output_centerline_shp) as dst:
@@ -96,14 +100,16 @@ def test_shp_to_shp_record_count_is_3(
 
 
 def test_shp_to_geojson_records_geom_type_is_multilinestring(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     EXPECTED_TYPE = "MultiLineString"
 
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_geojson = create_output_centerline_file("geojson")
-    script_runner.run(
-        "create_centerlines.py", input_polygon_shp, output_centerline_geojson
+
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_polygon_shp, output_centerline_geojson]
     )
 
     with fiona.open(output_centerline_geojson) as dst:
@@ -112,14 +118,16 @@ def test_shp_to_geojson_records_geom_type_is_multilinestring(
 
 
 def test_shp_to_geojson_record_count_is_3(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     EXPECTED_COUNT = 3
 
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_geojson = create_output_centerline_file("geojson")
-    script_runner.run(
-        "create_centerlines.py", input_polygon_shp, output_centerline_geojson
+
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_polygon_shp, output_centerline_geojson]
     )
 
     with fiona.open(output_centerline_geojson) as dst:
@@ -127,32 +135,30 @@ def test_shp_to_geojson_record_count_is_3(
 
 
 def test_invalid_destination_file_format(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     input_polygon_shp = create_input_file("polygons", "shp")
     output_centerline_file = create_output_centerline_file("unknown")
 
-    output = script_runner.run(
-        "create_centerlines.py", input_polygon_shp, output_centerline_file
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_polygon_shp, output_centerline_file]
     )
-    assert (
-        "No driver found for the following file extension: unknown"
-        in output.stderr
-    )
+
+    assert isinstance(result.exception, InvalidInputTypeError)
 
 
 def test_input_file_does_not_contain_polygons(
-    create_input_file, create_output_centerline_file, script_runner
+    create_input_file, create_output_centerline_file
 ):
     EXPECTED_COUNT = 0
 
     input_points_geojson = create_input_file("points", "geojson")
     output_centerline_geojson = create_output_centerline_file("geojson")
 
-    script_runner.run(
-        "create_centerlines.py",
-        input_points_geojson,
-        output_centerline_geojson,
+    runner = CliRunner()
+    result = runner.invoke(
+        create_centerlines, [input_points_geojson, output_centerline_geojson]
     )
 
     with fiona.open(output_centerline_geojson) as dst:

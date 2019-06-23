@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import logging
 import os
 
+import click
 import fiona
 from osgeo import gdal, ogr
 from shapely.geometry import mapping, shape
@@ -16,42 +17,52 @@ from .geometry import Centerline
 gdal.UseExceptions()
 
 
+@click.command()
+@click.argument("src", nargs=1, type=click.Path(exists=True))
+@click.argument("dst", nargs=1, type=click.Path(exists=False))
+@click.option(
+    "-d", "--density", default=0.5, help="Border density.", show_default=True
+)
 def create_centerlines(src, dst, density=0.5):
+    """Convert the geometries from the ``src`` file to centerlines in
+    the ``dst`` file.
+
+    Use the ``density`` parameter to adjust the level of detail you want
+    the centerlines to be produced with.
+
+    Only polygons and multipolygons are converted to centerlines,
+    whereas the other geometries are skipped. The polygon's attributes
+    are copied to its ``Centerline`` object.
+
+    If the ``density`` factor does not suit the polygon's geometry, the
+    ``TooFewRidgesError`` error is logged as a warning. You should try
+    readjusting the ``density`` factor and rerun the command.
+
+    :param src: path to the file containing input geometries
+    :type src: str
+    :param dst: path to the file that will contain the centerlines
+    :type dst: str
+    :param density: the border density factor that will be used for
+        creating centerlines, defaults to 0.5 [m].
+    :type density: float, optional
+    :return: ``dst`` file is generated
+    :rtype: None
     """
-    Create centerlines and save the to an ESRI Shapefile.
-
-    Reads polygons from the `src` ESRI Shapefile, creates Centerline
-    objects with the specified `density` parameter and writes them to
-    the `dst` ESRI Shapefile.
-
-    Only Polygon features are converted to centerlines. Features of
-    different types are skipped.
-
-    Args:
-        src (str): source ESRI Shapefile
-        dst (str): destination ESRI Shapefile
-        density (:obj:`float`, optional): the Centerline's density.
-            Defaults to 0.5 (meters)
-
-    Returns:
-        None
-
-    """
-    DST_DRIVER = get_ogr_driver(filepath=dst)
 
     with fiona.Env():
-        with fiona.open(src, mode="r") as source:
-            SCHEMA = source.schema.copy()
-            SCHEMA.update({"geometry": "MultiLineString"})
+        with fiona.open(src, mode="r") as source_file:
+            schema = source_file.schema.copy()
+            schema.update({"geometry": "MultiLineString"})
+            driver = get_ogr_driver(filepath=dst)
             with fiona.open(
                 dst,
                 mode="w",
-                driver=DST_DRIVER.GetName(),
-                schema=SCHEMA,
-                crs=source.crs,
-                encoding=source.encoding,
-            ) as destination:
-                for record in source:
+                driver=driver.GetName(),
+                schema=schema,
+                crs=source_file.crs,
+                encoding=source_file.encoding,
+            ) as destination_file:
+                for record in source_file:
                     geom = record.get("geometry")
                     input_geom = shape(geom)
 
@@ -75,7 +86,7 @@ def create_centerlines(src, dst, density=0.5):
                         },
                     }
 
-                    destination.write(centerline_dict)
+                    destination_file.write(centerline_dict)
 
     return None
 
