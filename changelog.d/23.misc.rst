@@ -1,0 +1,1 @@
+Convert the package to the `src/ layout <https://setuptools.readthedocs.io/en/latest/setuptools.html#using-a-src-layout>`_ and the tests to `pytest <https://docs.pytest.org/en/latest/>`_.

@@ -1,7 +1,8 @@
-# Change Log
-All notable changes to this project will be documented in this file.
-
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`_ and this project adheres to `Semantic Versioning <http://semver.org/>`_.
+
+Changes for the upcoming release can be found in the `changelog.d` directory in this repository. Do **NOT** add changelog entries here! This changelog is managed by `towncrier <https://github.com/hawkowl/towncrier>`_ and is compiled at release time.
+
+.. towncrier release notes start
 
 0.5.2 - 2019-01-27
 ------------------
@@ -22,7 +23,7 @@ Changed
 Fixed
 ^^^^^
 
-- Drop the ``path`` keyword argument from ``fiona.open`` calls [#20](https://github.com/fitodic/centerline/issues/20).
+- Drop the ``path`` keyword argument from ``fiona.open`` calls `#20 <https://github.com/fitodic/centerline/issues/20>`_.
 
 Removed
 ^^^^^^^
@@ -57,7 +58,7 @@ Changed
 Fixed
 ^^^^^
 
-- Error when ``MultiLineString`` degenerates into ``LineString`` ([#14](https://github.com/fitodic/centerline/issues/14)). Thanks [mxwell](https://github.com/mxwell)!
+- Error when ``MultiLineString`` degenerates into ``LineString`` (`#14 <https://github.com/fitodic/centerline/issues/14>`_). Thanks `mxwell <https://github.com/mxwell>`_!
 
 
 Removed
@@ -73,7 +74,7 @@ Removed
 Fixed
 ^^^^^
 
-- Ignore the ``osgeo`` package when building the documentation on [readthedocs.org](https://readthedocs.org/)
+- Ignore the ``osgeo`` package when building the documentation on `readthedocs.org <https://readthedocs.org/>`_.
 
 0.4 - 2018-01-07
 ----------------
