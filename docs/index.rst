@@ -28,6 +28,8 @@ Welcome to centerline's documentation!
 
 Roads, rivers and similar linear structures are often represented by long and complex polygons. Since one of the most important attributes of a linear structure is its length, extracting that attribute from a polygon can prove to be more or less difficult.
 
+This library tries to solve this problem by creating the the polygon's centerline using the `Voronoi diagram <https://en.wikipedia.org/wiki/Voronoi_diagram>`_.
+
 .. figure::  images/example.png
    :align:   center
 
