@@ -43,6 +43,7 @@ This library tries to solve this problem by creating the the polygon's centerlin
    chapters/usage.rst
    modules/centerline.rst
    chapters/faq.rst
+   chapters/contributing.rst
    chapters/changelog.rst
 
 Indices and tables
