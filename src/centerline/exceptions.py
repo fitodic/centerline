@@ -7,7 +7,7 @@ class CenterlineError(Exception):
 
     default_message = "An error has occured while constucting the centerline."
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         if not (args or kwargs):
             args = (self.default_message,)
 
@@ -28,3 +28,8 @@ class TooFewRidgesError(CenterlineError):
         "Number of produced ridges is too small. Please adjust your "
         "interpolation distance."
     )
+
+
+class UnsupportedVectorType(CenterlineError):
+
+    default_message = "No OGR driver was found for the provided file."

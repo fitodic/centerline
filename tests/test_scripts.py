@@ -9,7 +9,7 @@ import pytest
 from click.testing import CliRunner
 
 from centerline.converters import create_centerlines, get_ogr_driver
-from centerline.exceptions import InvalidInputTypeError
+from centerline.exceptions import InvalidInputTypeError, UnsupportedVectorType
 
 
 def test__driver_name__with_shp__returns_esri_shapefile(create_input_file):
@@ -42,7 +42,7 @@ def test__driver_name__with_geojson__returns_geojson(create_input_file):
 def test__with_unknown_extension__returns_valueerror():
     input_file = "example.unknown"
 
-    with pytest.raises(InvalidInputTypeError):
+    with pytest.raises(UnsupportedVectorType):
         get_ogr_driver(input_file)
 
 
@@ -150,7 +150,7 @@ def test_invalid_destination_file_format(
         create_centerlines, [input_polygon_shp, output_centerline_file]
     )
 
-    assert isinstance(result.exception, InvalidInputTypeError)
+    assert isinstance(result.exception, UnsupportedVectorType)
 
 
 def test_input_file_does_not_contain_polygons(

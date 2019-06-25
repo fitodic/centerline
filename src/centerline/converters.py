@@ -10,7 +10,11 @@ import fiona
 from osgeo import gdal, ogr
 from shapely.geometry import mapping, shape
 
-from .exceptions import InvalidInputTypeError, TooFewRidgesError
+from .exceptions import (
+    InvalidInputTypeError,
+    TooFewRidgesError,
+    UnsupportedVectorType
+)
 from .geometry import Centerline
 
 # Enable GDAL/OGR exceptions
@@ -102,7 +106,7 @@ def get_ogr_driver(filepath):
 
     :param filepath: file's path
     :type filepath: str
-    :raises InvalidInputTypeError: unsupported extension
+    :raises UnsupportedVectorType: unsupported extension
     :return: OGR driver
     :rtype: osgeo.ogr.Driver
     """
@@ -119,7 +123,4 @@ def get_ogr_driver(filepath):
             return driver
 
     else:
-        msg = "No driver found for the following file extension: {}".format(
-            EXTENSION
-        )
-        raise InvalidInputTypeError(msg)
+        raise UnsupportedVectorType
