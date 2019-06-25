@@ -21,7 +21,7 @@ Centerline
     :target: https://pepy.tech/project/centerline
     :alt: Downloads
 
-.. figure::  docs/source/images/example.png
+.. figure::  docs/images/example.png
    :align:   center
 
 Roads, rivers and similar linear structures are often represented by
