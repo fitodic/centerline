@@ -13,7 +13,7 @@ from shapely.geometry import mapping, shape
 from .exceptions import (
     InvalidInputTypeError,
     TooFewRidgesError,
-    UnsupportedVectorType
+    UnsupportedVectorType,
 )
 from .geometry import Centerline
 
@@ -111,7 +111,7 @@ def get_ogr_driver(filepath):
     :rtype: osgeo.ogr.Driver
     """
     filename, file_extension = os.path.splitext(filepath)
-    EXTENSION = file_extension[1:]
+    extension = file_extension[1:]
 
     ogr_driver_count = ogr.GetDriverCount()
     for idx in range(ogr_driver_count):
@@ -119,7 +119,7 @@ def get_ogr_driver(filepath):
         driver_extension = driver.GetMetadataItem(str("DMD_EXTENSION")) or ""
         driver_extensions = driver.GetMetadataItem(str("DMD_EXTENSIONS")) or ""
 
-        if EXTENSION == driver_extension or EXTENSION in driver_extensions:
+        if extension == driver_extension or extension in driver_extensions:
             return driver
 
     else:
