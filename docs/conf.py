@@ -88,8 +88,6 @@ html_theme_options = {
     "github_repo": "centerline",
     "github_banner": True,
     "github_button": True,
-    "travis_button": True,
-    "codecov_button": True,
     "fixed_sidebar": True,
     "show_related": True,
 }
