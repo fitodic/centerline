@@ -156,5 +156,4 @@ Added
 
 - The ``Centerline`` class
 - The logic for calculating the centerline of a polygon
-- The ``shp2centerline`` command for converting polygons from a Shapefile
-into centerlines and saving them into another Shapefile
+- The ``shp2centerline`` command for converting polygons from a Shapefile into centerlines and saving them into another Shapefile

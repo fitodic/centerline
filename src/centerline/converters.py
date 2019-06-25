@@ -98,7 +98,7 @@ def create_centerlines(src, dst, interpolation_distance=0.5):
 
 
 def get_ogr_driver(filepath):
-    """Get the OGR driver based on the file's extensions.
+    """Get the OGR driver based on the file's extension.
 
     :param filepath: file's path
     :type filepath: str

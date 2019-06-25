@@ -23,14 +23,15 @@ class Centerline(MultiLineString):
     attributes.
 
     :param input_geometry: input geometry
-    :type input_geometry: shapely.geometry.Polygon or
-        shapely.geometry.MultiPolygon
+    :type input_geometry: :py:class:`shapely.geometry.Polygon` or
+        :py:class:`shapely.geometry.MultiPolygon`
     :param interpolation_distance: densify the input geometry's
         border by placing additional points at this distance,
         defaults to 0.5 [meter]
     :type interpolation_distance: float, optional
     :raises exceptions.InvalidInputTypeError: input geometry is not
-        of type ``Polygon`` or ``MultiPolygon``
+        of type :py:class:`shapely.geometry.Polygon` or
+        :py:class:`shapely.geometry.MultiPolygon`
     """
 
     def __init__(
@@ -42,15 +43,16 @@ class Centerline(MultiLineString):
         if not self.input_geometry_is_valid():
             raise exceptions.InvalidInputTypeError
 
-        self._min_x, self._min_y = self.get_reduced_coordinates()
+        self._min_x, self._min_y = self._get_reduced_coordinates()
         self.assign_attributes_to_instance(attributes)
 
-        super(Centerline, self).__init__(lines=self.construct_centerline())
+        super(Centerline, self).__init__(lines=self._construct_centerline())
 
     def input_geometry_is_valid(self):
-        """Input geometry is of type ``Polygon`` or ``MultiPolygon``.
+        """Input geometry is of a :py:class:`shapely.geometry.Polygon`
+        or a :py:class:`shapely.geometry.MultiPolygon`.
 
-        :return: ``True`` or ``False``
+        :return: geometry is valid
         :rtype: bool
         """
         if isinstance(self._input_geometry, Polygon) or isinstance(
@@ -60,18 +62,13 @@ class Centerline(MultiLineString):
         else:
             return False
 
-    def get_reduced_coordinates(self):
-        """Get the polygon envelope's reduced coordinates.
-
-        :return: min_x, min_y
-        :rtype: tuple(int, int)
-        """
+    def _get_reduced_coordinates(self):
         min_x = int(min(self._input_geometry.envelope.exterior.xy[0]))
         min_y = int(min(self._input_geometry.envelope.exterior.xy[1]))
         return min_x, min_y
 
     def assign_attributes_to_instance(self, attributes):
-        """Set the passed ``attributes`` to the ``Centerline`` object.
+        """Assign the ``attributes`` to the :py:class:`Centerline` object.
 
         :param attributes: polygon's attributes
         :type attributes: dict
@@ -79,14 +76,7 @@ class Centerline(MultiLineString):
         for key in attributes:
             setattr(self, key, attributes.get(key))
 
-    def construct_centerline(self):
-        """Construct the ``Centerline``'s geometry.
-
-        :raises exceptions.TooFewRidgesError: Invalid interpolation
-            distance.
-        :return: union of LineStrings
-        :rtype: shapely.ops.unary_union
-        """
+    def _construct_centerline(self):
         vertices, ridges = self._get_voronoi_vertices_and_ridges()
         linestrings = []
         for ridge in ridges:
@@ -108,7 +98,7 @@ class Centerline(MultiLineString):
         return unary_union(linestrings)
 
     def _get_voronoi_vertices_and_ridges(self):
-        borders = self.get_densified_borders()
+        borders = self._get_densified_borders()
 
         voronoi_diagram = Voronoi(borders)
         vertices = voronoi_diagram.vertices
@@ -128,15 +118,8 @@ class Centerline(MultiLineString):
             and len(linestring.coords[0]) > 1
         )
 
-    def get_densified_borders(self):
-        """Get densified polygon borders.
-
-        Used for construction of the Voronoi diagram.
-
-        :return: Array of points
-        :rtype: numpy.array
-        """
-        polygons = self.extract_polygons_from_input_geometry()
+    def _get_densified_borders(self):
+        polygons = self._extract_polygons_from_input_geometry()
         points = []
         for polygon in polygons:
             points += self._get_interpolated_boundary(polygon.exterior)
@@ -146,12 +129,7 @@ class Centerline(MultiLineString):
 
         return array(points)
 
-    def extract_polygons_from_input_geometry(self):
-        """Extract polygons and multipolygons from the input geometry.
-
-        :return: iterable of polygons
-        :rtype: tuple(Polygon)
-        """
+    def _extract_polygons_from_input_geometry(self):
         if isinstance(self._input_geometry, MultiPolygon):
             return (polygon for polygon in self._input_geometry)
         else:

@@ -59,7 +59,11 @@ release = find_version("../src/centerline/__init__.py")
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -95,13 +99,11 @@ html_theme_options = {
 # The GDAL package first has to be installed system-wide which breaks
 # the documentation build on readthedocs.io. Therefore, the `osgeo`
 # module is mocked using `autodoc_mock_imports`
-autodoc_mock_imports = [
-    "osgeo",
-    "gdal",
-    "ogr",
-    "numpy",
-    "click",
-    "scipy",
-    "fiona",
-    "shapely",
-]
+autodoc_mock_imports = ["osgeo", "gdal", "ogr"]
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "fiona": ("https://fiona.readthedocs.io/en/latest/", None),
+    "shapely": ("https://shapely.readthedocs.io/en/latest/", None),
+}
+intersphinx_timeout = 30

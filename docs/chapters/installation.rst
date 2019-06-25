@@ -1,31 +1,34 @@
+************
 Installation
 ************
 
-.. note::
-
-    Before installing this library, please note the following:
-
-    * The use of a `virtual environment <http://docs.python-guide.org/en/latest/dev/virtualenvs/>`_ is **highly recommended**;
-    * This library uses `GDAL <http://www.gdal.org/>`_ for reading and writing vector data and `python-GDAL <https://pypi.python.org/pypi/GDAL/>`_ as a wrapper.
+If you want to use the ``create_centerline`` command-line tool, you need to install `GDAL <https://gdal.org/>`_ and the corresponding `python-GDAL <https://pypi.python.org/pypi/GDAL/>`_ version. ``GDAL`` is a translator library for raster and vector geospatial data formats whose `binary <https://gdal.org/download.html#binaries>`_ needs to be installed system-wide, whereas ``python-GDAL`` should be installed into a `virtual environment <http://docs.python-guide.org/en/latest/dev/virtualenvs/>`_.
 
 Installing GDAL
 ===============
 
-First of all, **the GDAL library needs to be installed system-wide**.
+GDAL binary
+-----------
 
 Linux
------
+^^^^^
 
 If you are using Linux, the GDAL library is probably already located in one of your distribution's repositories. If so, you can install it using your distribution's package manager, along with the other necessary dependencies.
 
 .. note::
 
-    The names of packages may vary between distributions:
+    The names of packages may vary between distributions.
 
-    .. code:: bash
+If you are using Fedora, run the following command:
 
-        # Fedora
-        $ sudo dnf install gdal gdal-devel gcc-c++ redhat-rpm-config
+.. code:: bash
+
+    $ sudo dnf install gdal gdal-devel gcc-c++ redhat-rpm-config
+
+.. _python-gdal-binding:
+
+python-GDAL
+-----------
 
 Once installed, locate the GDAL's headers and set the *include* path to the ``CPLUS_INCLUDE_PATH`` and ``C_INCLUDE_PATH`` environment variables::
 
@@ -47,6 +50,7 @@ After that, you can proceed to installing GDAL in the virtual environment (i.e. 
 
     For more info, visit `Stack Exchange <http://gis.stackexchange.com/questions/28966/python-gdal-package-missing-header-file-when-installing-via-pip>`__.
 
+
 Installing centerline
 =====================
 
@@ -56,19 +60,35 @@ You can download and install the package from `PyPI <https://pypi.python.org/pyp
 
     $ pip install centerline
 
+GDAL can be installed either directly (see :ref:`python-gdal-binding`) or by specifying the ``gdal`` extra dependency:
+
+.. code:: bash
+
+    $ pip install centerline[gdal]
+
+.. warning::
+
+    ``pip install centerline[gdal]`` can be error-prone because multiple GDAL versions are supported and ``pip`` will automatically try to retrieve the latest version which you may or may not have installed system-wide.
+
 Development
 ===========
 
 If you want to contribute to this library, apart from installing GDAL, you have to:
 
-1. fork and clone the repository::
+1. fork and clone the repository:
+
+.. code:: bash
 
     $ git clone git@github.com:user/centerline.git
 
-2. install the library into its own virtual environment::
+2. install the library in develop mode:
 
-    $ pip install -e .[dev,lint,test,docs]
+.. code:: bash
 
-3. run the test suite to make sure everything is in order::
+    $ pip install -e .[dev,gdal,lint,test,docs]
+
+3. run the test suite to make sure everything is in order:
+
+.. code:: bash
 
     $ tox
