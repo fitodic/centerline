@@ -4,9 +4,6 @@ language: python
 sudo: false
 stages:
   - lint
-  - docs
-  - manifest
-  - pypi-description
   - test
   - name: deploy
     if: tag IS present
@@ -29,19 +26,19 @@ matrix:
       before_install: skip
       after_success: skip
     - python: 3.7
-      stage: docs
+      stage: lint
       env: TOXENV=docs
       addons: skip
       before_install: skip
       after_success: skip
     - python: 3.7
-      stage: manifest
+      stage: lint
       env: TOXENV=manifest
       addons: skip
       before_install: skip
       after_success: skip
     - python: 3.7
-      stage: pypi-description
+      stage: lint
       env: TOXENV=pypi-description
       addons: skip
       before_install: skip
