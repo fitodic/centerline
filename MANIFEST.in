@@ -1,4 +1,5 @@
 include *.md *.rst *.toml *.yml LICENSE MANIFEST.in tox.ini
+exclude .bumpversion.cfg
 
 recursive-include docs *
 recursive-exclude docs/_build *
@@ -8,3 +9,4 @@ recursive-include tests *
 recursive-exclude tests/__pycache__ *
 
 prune .travis
+prune changelog.d
