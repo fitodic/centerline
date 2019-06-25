@@ -1,1 +1,0 @@
-Replace `argparse <https://docs.python.org/3/library/argparse.html>`_ with `Click <https://click.palletsprojects.com/en/7.x/>`_. This should improve Windows support of the ``create_centerline`` command-line script.

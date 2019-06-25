@@ -8,6 +8,21 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.5.2 (2019-06-25)
+-------------------
+
+Deprecations and Removals
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Replace `argparse <https://docs.python.org/3/library/argparse.html>`_ with `Click <https://click.palletsprojects.com/en/7.x/>`_. This should improve Windows support of the ``create_centerline`` command-line script. (`#23 <https://github.com/fitodic/centerline/pull/23>`_)
+
+
+Misc
+^^^^
+
+- Convert the package to the `src/ layout <https://setuptools.readthedocs.io/en/latest/setuptools.html#using-a-src-layout>`_ and the tests to `pytest <https://docs.pytest.org/en/latest/>`_. The modules have been renamed, and the ``Centerline`` class has been refactored to enable overrides. (`#23 <https://github.com/fitodic/centerline/pull/23>`_)
+
+
 0.5.2 - 2019-01-27
 ------------------
 

@@ -1,1 +1,0 @@
-Convert the package to the `src/ layout <https://setuptools.readthedocs.io/en/latest/setuptools.html#using-a-src-layout>`_ and the tests to `pytest <https://docs.pytest.org/en/latest/>`_. The modules have been renamed, and the ``Centerline`` class has been refactored to enable overrides.
