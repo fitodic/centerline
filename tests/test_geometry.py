@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
+
 from shapely import geometry
 
 from centerline.exceptions import InvalidInputTypeError, TooFewRidgesError

@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+
 __title__ = 'centerline'
 __version__ = '0.5.2'
 __author__ = 'Filip Todic'

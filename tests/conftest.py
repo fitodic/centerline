@@ -6,7 +6,9 @@ import os
 import shutil
 
 import pytest
+
 from shapely import geometry
+
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 TMP_DIR = os.path.join(TESTS_DIR, "tmp")

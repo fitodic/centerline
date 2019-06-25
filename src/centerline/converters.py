@@ -7,6 +7,7 @@ import os
 
 import click
 import fiona
+
 from osgeo import gdal, ogr
 from shapely.geometry import mapping, shape
 
@@ -16,6 +17,7 @@ from .exceptions import (
     UnsupportedVectorType,
 )
 from .geometry import Centerline
+
 
 # Enable GDAL/OGR exceptions
 gdal.UseExceptions()

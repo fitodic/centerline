@@ -2,14 +2,13 @@
 
 from __future__ import unicode_literals
 
-import shutil
-
 import fiona
 import pytest
+
 from click.testing import CliRunner
 
 from centerline.converters import create_centerlines, get_ogr_driver
-from centerline.exceptions import InvalidInputTypeError, UnsupportedVectorType
+from centerline.exceptions import UnsupportedVectorType
 
 
 def test__driver_name__with_shp__returns_esri_shapefile(create_input_file):
@@ -53,7 +52,7 @@ def test_shp_to_shp_too_large_density_raises_error(
     output_centerline_shp = create_output_centerline_file("shp")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines,
         [
             input_polygon_shp,
@@ -78,7 +77,7 @@ def test_shp_to_shp_records_geom_type_is_multilinestring(
     output_centerline_shp = create_output_centerline_file("shp")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines, [input_polygon_shp, output_centerline_shp]
     )
 
@@ -96,7 +95,7 @@ def test_shp_to_shp_record_count_is_3(
     output_centerline_shp = create_output_centerline_file("shp")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines, [input_polygon_shp, output_centerline_shp]
     )
 
@@ -113,7 +112,7 @@ def test_shp_to_geojson_records_geom_type_is_multilinestring(
     output_centerline_geojson = create_output_centerline_file("geojson")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines, [input_polygon_shp, output_centerline_geojson]
     )
 
@@ -131,7 +130,7 @@ def test_shp_to_geojson_record_count_is_3(
     output_centerline_geojson = create_output_centerline_file("geojson")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines, [input_polygon_shp, output_centerline_geojson]
     )
 
@@ -162,7 +161,7 @@ def test_input_file_does_not_contain_polygons(
     output_centerline_geojson = create_output_centerline_file("geojson")
 
     runner = CliRunner()
-    result = runner.invoke(
+    runner.invoke(
         create_centerlines, [input_points_geojson, output_centerline_geojson]
     )
 
