@@ -7,6 +7,9 @@ sudo: false
 
 stages:
   - lint
+  - docs
+  - manifest
+  - pypi-description
   - test
 
 cache:
@@ -22,6 +25,30 @@ env:
 
 matrix:
   include:
+    - python: 3.7
+      stage: lint
+      env: TOXENV=lint
+      addons: skip
+      before_install: skip
+      after_success: skip
+    - python: 3.7
+      stage: docs
+      env: TOXENV=docs
+      addons: skip
+      before_install: skip
+      after_success: skip
+    - python: 3.7
+      stage: manifest
+      env: TOXENV=manifest
+      addons: skip
+      before_install: skip
+      after_success: skip
+    - python: 3.7
+      stage: pypi-description
+      env: TOXENV=pypi-description
+      addons: skip
+      before_install: skip
+      after_success: skip
     - python: 2.7
       stage: test
       env:
