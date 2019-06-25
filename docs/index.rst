@@ -10,6 +10,10 @@ Welcome to centerline's documentation!
     :target: https://travis-ci.org/fitodic/centerline
     :alt: Build
 
+.. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
+    :target: http://centerline.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 .. image:: https://coveralls.io/repos/github/fitodic/centerline/badge.svg?branch=master
     :target: https://coveralls.io/github/fitodic/centerline?branch=master
     :alt: Coverage
@@ -18,9 +22,9 @@ Welcome to centerline's documentation!
     :target: https://pypi.python.org/pypi/centerline
     :alt: Version
 
-.. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
-    :target: http://centerline.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+.. image:: https://pepy.tech/badge/centerline
+    :target: https://pepy.tech/project/centerline
+    :alt: Downloads
 
 Roads, rivers and similar linear structures are often represented by long and complex polygons. Since one of the most important attributes of a linear structure is its length, extracting that attribute from a polygon can prove to be more or less difficult.
 

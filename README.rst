@@ -5,6 +5,10 @@ Centerline
     :target: https://travis-ci.org/fitodic/centerline
     :alt: Build
 
+.. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
+    :target: http://centerline.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 .. image:: https://coveralls.io/repos/github/fitodic/centerline/badge.svg?branch=master
     :target: https://coveralls.io/github/fitodic/centerline?branch=master
     :alt: Coverage
@@ -13,9 +17,9 @@ Centerline
     :target: https://pypi.python.org/pypi/centerline
     :alt: Version
 
-.. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
-    :target: http://centerline.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+.. image:: https://pepy.tech/badge/centerline
+    :target: https://pepy.tech/project/centerline
+    :alt: Downloads
 
 .. figure::  docs/source/images/example.png
    :align:   center
