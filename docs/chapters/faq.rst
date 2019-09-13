@@ -47,6 +47,6 @@ the polygon (i.e. do not intersect the polygon's boundary). In that
 case, the output centerline can be reduced to a single line or even a
 single point.
 
-When the centerline consists of less than two lines, a ``RuntimeError``
+When the centerline consists of less than two lines, the ``TooFewRidgesError``
 is raised, the ``create_centerline`` script skips the geometry in
 question and continues processing the other geometries.

@@ -1,4 +1,4 @@
-centerline's API
+API
 ==================
 
 Module contents
