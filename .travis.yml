@@ -85,11 +85,9 @@ matrix:
         - GDALVERSION=2.4.0
     - python: 3.7
       stage: deploy
-      addons: skip
-      before_install: skip
-      install: skip
-      script: skip
-      after_success: skip
+      env:
+        - TOXENV=py37-gdal2.4.0
+        - GDALVERSION=2.4.0
       deploy:
         provider: pypi
         user: fitodic
