@@ -124,5 +124,4 @@ def get_ogr_driver(filepath):
         if extension == driver_extension or extension in driver_extensions:
             return driver
 
-    else:
-        raise UnsupportedVectorType
+    raise UnsupportedVectorType

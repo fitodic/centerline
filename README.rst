@@ -34,3 +34,33 @@ centerline using the `Voronoi diagram
 <https://en.wikipedia.org/wiki/Voronoi_diagram>`_. For more info on how
 to use this package, see the
 `official documentation <http://centerline.readthedocs.io/>`_.
+
+
+Features
+^^^^^^^^
+
+* A command-line script for creating centerlines from a vector source file and saving them into a destination vector file: ``create_centerlines``
+
+.. code:: bash
+
+    $ create_centerlines input.shp output.geojson
+
+
+* The ``Centerline`` class that allows integration into your own workflow.
+
+
+.. code:: python
+
+    >>> from shapely.geometry import Polygon
+    >>> from centerline.geometry import Centerline
+
+    >>> polygon = Polygon([[0, 0], [0, 4], [4, 4], [4, 0]])
+    >>> attributes = {"id": 1, "name": "polygon", "valid": True}
+
+    >>> centerline = Centerline(polygon, **attributes)
+    >>> centerline.id == 1
+    True
+    >>> centerline.name
+    'polygon'
+    >>> centerline.geoms
+    <shapely.geometry.base.GeometrySequence object at 0x7f7d24116210>
