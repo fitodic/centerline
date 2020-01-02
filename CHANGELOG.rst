@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.6.0 (2020-01-02)
+-------------------
+
+Misc
+^^^^
+
+- Run the test suite against Python 3.8. (`#25 <https://github.com/fitodic/centerline/pull/25>`_)
+
+
 0.6.0 (2019-06-25)
 -------------------
 
