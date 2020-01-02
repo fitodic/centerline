@@ -23,7 +23,7 @@ Misc
 - Convert the package to the `src/ layout <https://setuptools.readthedocs.io/en/latest/setuptools.html#using-a-src-layout>`_ and the tests to `pytest <https://docs.pytest.org/en/latest/>`_. The modules have been renamed, and the ``Centerline`` class has been refactored to enable overrides. (`#23 <https://github.com/fitodic/centerline/pull/23>`_)
 
 
-0.5.2 - 2019-01-27
+0.5.2 (2019-01-27)
 ------------------
 
 Fixed
@@ -31,7 +31,7 @@ Fixed
 
 - Package versioning that caused a broken upload
 
-0.5.1 - 2019-01-27
+0.5.1 (2019-01-27)
 ------------------
 
 Changed
@@ -50,7 +50,7 @@ Removed
 - Python 3.5 support
 
 
-0.5 - 2018-09-09
+0.5.0 (2018-09-09)
 ----------------
 
 Added
@@ -58,7 +58,7 @@ Added
 
 - ``MultiPolygon`` support
 
-0.4.2 - 2018-08-22
+0.4.2 (2018-08-22)
 ------------------
 
 Added
@@ -87,7 +87,7 @@ Removed
 - ``Centerline`` from the ``centerline`` namespace. To import the ``Centerline``
     class, use ``from centerline.main import Centerline``
 
-0.4.1 - 2018-01-07
+0.4.1 (2018-01-07)
 ------------------
 
 Fixed
@@ -95,7 +95,7 @@ Fixed
 
 - Ignore the ``osgeo`` package when building the documentation on `readthedocs.org <https://readthedocs.org/>`_.
 
-0.4 - 2018-01-07
+0.4.0 (2018-01-07)
 ----------------
 
 Added
@@ -110,7 +110,7 @@ Fixed
 - Add a comma to the list of development requirements
 
 
-0.3 - 2017-11-26
+0.3.0 (2017-11-26)
 ----------------
 
 Added
@@ -137,7 +137,7 @@ Removed
 - ``shp2centerline`` script
 
 
-0.2.1 - 2017-06-18
+0.2.1 (2017-06-18)
 ------------------
 
 Fixed
@@ -145,7 +145,7 @@ Fixed
 
 - Read the ``README.rst`` from ``setup.py``
 
-0.2 - 2017-06-18
+0.2.0 (2017-06-18)
 ----------------
 
 Added
@@ -168,7 +168,7 @@ Changed
 - Fix PEP8 errors in ``setup.py``
 - Convert README from MarkDown to ReStructuredText
 
-0.1 - 2016-01-15
+0.1.0 (2016-01-15)
 ----------------
 
 Added
