@@ -8,6 +8,12 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.6.2 (2020-01-02)
+-------------------
+
+No significant changes.
+
+
 0.6.2 (2020-01-02)
 -------------------
 
