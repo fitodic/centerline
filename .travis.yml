@@ -58,6 +58,11 @@ matrix:
       env:
         - TOXENV=py37-gdal2.3.3
         - GDALVERSION=2.3.3
+    - python: 3.8
+      stage: test
+      env:
+        - TOXENV=py38-gdal2.3.3
+        - GDALVERSION=2.3.3
     - python: 2.7
       stage: test
       env:
@@ -73,12 +78,13 @@ matrix:
       env:
         - TOXENV=py37-gdal2.4.0
         - GDALVERSION=2.4.0
+    - python: 3.8
+      stage: test
+      env:
+        - TOXENV=py38-gdal2.4.0
+        - GDALVERSION=2.4.0
     - python: 3.7
       stage: deploy
-      addons: skip
-      before_install: skip
-      script: skip
-      after_success: skip
       deploy:
         provider: pypi
         user: fitodic
