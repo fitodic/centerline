@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.6.1 (2020-01-02)
+-------------------
+
+Misc
+^^^^
+
+- Update the CI deploy stage. (`#26 <https://github.com/fitodic/centerline/pull/26>`_)
+
+
 0.6.1 (2020-01-02)
 -------------------
 
