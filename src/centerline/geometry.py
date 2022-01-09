@@ -10,7 +10,7 @@ from shapely.ops import unary_union
 from . import exceptions
 
 
-class Centerline(MultiLineString):
+class Centerline:
     """Create a centerline object.
 
     The ``attributes`` are copied and set as the centerline's
@@ -40,7 +40,7 @@ class Centerline(MultiLineString):
         self._min_x, self._min_y = self._get_reduced_coordinates()
         self.assign_attributes_to_instance(attributes)
 
-        super(Centerline, self).__init__(lines=self._construct_centerline())
+        self.geometry = MultiLineString(lines=self._construct_centerline())
 
     def input_geometry_is_valid(self):
         """Input geometry is of a :py:class:`shapely.geometry.Polygon`

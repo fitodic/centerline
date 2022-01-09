@@ -13,7 +13,7 @@ from centerline.geometry import Centerline
 def test_creating_centerline_from_polygon_returns_centerline(simple_polygon):
     centerline = Centerline(simple_polygon)
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)
 
 
 def test_creating_centerline_from_complex_polygon_returns_centerline(
@@ -22,7 +22,7 @@ def test_creating_centerline_from_complex_polygon_returns_centerline(
     centerline = Centerline(complex_polygon)
 
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)
 
 
 def test_creating_centerline_from_multipolygon_returns_centerline(
@@ -30,7 +30,7 @@ def test_creating_centerline_from_multipolygon_returns_centerline(
 ):
     centerline = Centerline(multipolygon)
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)
 
 
 def test_creating_centerline_from_point_raises_typeerror(point):
@@ -71,7 +71,7 @@ def test_creating_centerline_using_too_large_interp_dist_raises_runtimeerror(
 
     centerline = Centerline(polygon, 5)
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)
 
 
 def test_centerline_has_attributes_assigned_to_it(simple_polygon):
@@ -80,7 +80,7 @@ def test_centerline_has_attributes_assigned_to_it(simple_polygon):
     centerline = Centerline(simple_polygon, **ATTRIBUTES)
 
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)
     assert centerline.id == ATTRIBUTES.get("id")
     assert centerline.name == ATTRIBUTES.get("name")
     assert centerline.valid == ATTRIBUTES.get("valid")
@@ -88,32 +88,32 @@ def test_centerline_has_attributes_assigned_to_it(simple_polygon):
 
 def test_centerline_has_length_greater_than_zero(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert centerline.length > 0
+    assert centerline.geometry.length > 0
 
 
 def test_centerline_geometry_is_valid(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert centerline.is_valid is True
+    assert centerline.geometry.is_valid is True
 
 
 def test_centerline_is_not_empty(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert centerline.is_empty is False
+    assert centerline.geometry.is_empty is False
 
 
 def test_centerline_is_simple(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert centerline.is_simple is True
+    assert centerline.geometry.is_simple is True
 
 
 def test_centerline_does_not_touch_the_polygons_boundary(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert centerline.intersects(complex_polygon.boundary) is False
+    assert centerline.geometry.intersects(complex_polygon.boundary) is False
 
 
 def test_polygon_contains_the_centerline(complex_polygon):
     centerline = Centerline(complex_polygon)
-    assert complex_polygon.contains(centerline) is True
+    assert complex_polygon.contains(centerline.geometry) is True
 
 
 def test_qhull_error(create_polygon):
@@ -326,4 +326,4 @@ def test_qhull_error(create_polygon):
     centerline = Centerline(polygon, **attributes)
 
     assert isinstance(centerline, Centerline)
-    assert isinstance(centerline, geometry.MultiLineString)
+    assert isinstance(centerline.geometry, geometry.MultiLineString)

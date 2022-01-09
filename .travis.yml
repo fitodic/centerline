@@ -83,6 +83,11 @@ matrix:
       env:
         - TOXENV=py38-gdal2.4.0
         - GDALVERSION=2.4.0
+    - python: 3.10
+      stage: test
+      env:
+        - TOXENV=py10-gdal3.2.2
+        - GDALVERSION=3.2.2
     - python: 3.7
       stage: deploy
       env:
