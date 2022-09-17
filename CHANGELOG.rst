@@ -8,7 +8,7 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
-v0.6.3 (2022-09-17)
+0.6.4 (2022-09-17)
 -------------------
 
 Bugfixes
