@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.6.3 (2022-09-17)
+-------------------
+
+Bugfixes
+^^^^^^^^
+
+- Fix shapely 2 deprecation warning for iterating multipolygons (`#34 <https://github.com/fitodic/centerline/pull/34>`_)
+
+
 0.6.3 (2020-01-02)
 -------------------
 

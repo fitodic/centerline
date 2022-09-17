@@ -1,1 +1,0 @@
-Fix shapely 2 deprecation warning for iterating multipolygons
