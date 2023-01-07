@@ -1,167 +1,235 @@
-name: Linux CI
+name: CI/CD
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    # Run weekly on Saturday
+    - cron: "37 3 * * SAT"
 
 jobs:
-  build:
-    name: Python ${{ matrix.python }} / GDAL ${{ matrix.GDALVERSION }} / PROJ ${{ matrix.PROJVERSION }}
-    runs-on: [ubuntu-18.04]
-    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+  lint:
+    name: Run the linters
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # Test all supported gdal minor versions (except latest stable) with one python version
-          - {
-              python: 3.7,
-              GDALVERSION: "3.1.4",
-              PROJVERSION: "6.3.2",
-              allow_failure: "false",
-            }
-          - {
-              python: 3.7,
-              GDALVERSION: "3.2.3",
-              PROJVERSION: "7.2.1",
-              allow_failure: "false",
-            }
-          - {
-              python: 3.8,
-              GDALVERSION: "3.3.3",
-              PROJVERSION: "7.2.1",
-              allow_failure: "false",
-            }
-          - {
-              python: 3.9,
-              GDALVERSION: "3.4.3",
-              PROJVERSION: "8.2.1",
-              allow_failure: "false",
-            }
-          - {
-              python: "3.10",
-              GDALVERSION: "3.5.3",
-              PROJVERSION: "9.0.1",
-              allow_failure: "false",
-            }
-          - {
-              python: "3.11",
-              GDALVERSION: "3.6.0",
-              PROJVERSION: "9.1.0",
-              allow_failure: "false",
-            }
-
-          # Test GDAL master
-          - {
-              python: "3.11",
-              GDALVERSION: "master",
-              PROJVERSION: "9.1.0",
-              allow_failure: "true",
-            }
-
-
-    env:
-      CYTHON_COVERAGE: "true"
-      MAKEFLAGS: "-j 4 -s"
-      CXXFLAGS: "-O0"
-      CFLAGS: "-O0"
-      PROJVERSION: ${{ matrix.PROJVERSION }}
-      GDALVERSION: ${{ matrix.GDALVERSION }}
-      GDALINST: ${{ github.workspace }}/gdalinstall
-      GDALBUILD: ${{ github.workspace }}/gdalbuild
-      PROJINST: ${{ github.workspace }}/gdalinstall
-      PROJBUILD: ${{ github.workspace }}/projbuild
-      FILEGDB: ${{ github.workspace }}/gdalinstall/filegdb
-
-      # Emulate travis
-      TRAVIS_BUILD_DIR: ${{ github.workspace }}
-      TRAVIS_OS_NAME: "linux"
+        python-version: ["3.10"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ matrix.python-version }}
 
-      - name: Set env variables
+      - name: Get pip cache dir
+        id: pip-cache
         run: |
-
-          # Additional env variables
-          echo "GDAL_DATA=$GDALINST/gdal-$GDALVERSION/share/gdal" >> $GITHUB_ENV
-          echo "PROJ_DATA=$GDALINST/gdal-$GDALVERSION/share/proj" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$GDALINST/proj-$PROJVERSION/lib:$FILEGDB/lib:\$LD_LIBRARY_PATH" >> $GITHUB_ENV
-
-          # Add PATH
-          echo "$GDALINST/gdal-$GDALVERSION/bin" >> $GITHUB_PATH
-          echo "$GDALINST/proj-$PROJVERSION/bin" >> $GITHUB_PATH
-
-          echo "cat \$GITHUB_ENV"
-          cat $GITHUB_ENV
-          echo ""
-          echo "cat \$GITHUB_PATH"
-          cat $GITHUB_PATH
-
-      - name: Install apt packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install libatlas-base-dev libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev
-
-          # Unlike travis, packages from non default repositories are installed.
-          # While default repositories e.g. bionic/universe or bionic/main) tend to keep packages at the same API / ABI level,
-          # this is not guaranteed with other repositories.
-          # The following command creates a list of these packages, which is used as key for the GDAL cache
-          # The repositories of packages can be identified in the the output of `sudo apt-get install`
-          apt list --installed | grep 'libgeos-dev\|libxml2-dev' > $GITHUB_WORKSPACE/apt_list
-          cat $GITHUB_WORKSPACE/apt_list
-
-      - name: Cache GDAL binaries
-        uses: actions/cache@v3
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Cache
+        uses: actions/cache@v2
         with:
-          path: gdalinstall
-          key: ${{ runner.os }}-gdal-${{ matrix.GDALVERSION }}-proj-${{ matrix.PROJVERSION }}-${{ hashFiles('**/apt_list') }}-${{ hashFiles('scripts/travis_gdal_install.sh', 'scripts/travis_proj_install.sh', 'scripts/travis_filegdb_install.sh') }}
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Build PROJ
+            ${{ matrix.python-version }}-v1-
+      - name: Install dependencies
         run: |
-          chmod +x scripts/travis_proj_install.sh && ./scripts/travis_proj_install.sh
-
-      - name: Install FileGDB
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade tox
+      - name: Test with tox
         run: |
-          chmod +x scripts/travis_filegdb_install.sh && ./scripts/travis_filegdb_install.sh
+          tox -e lint
+          tox -e manifest
+          tox -e changelog -- --draft
 
-      - name: Build GDAL
-        continue-on-error: ${{ matrix.allow_failure == 'true' }}
-        run: |
-          chmod +x scripts/travis_gdal_install.sh && ./scripts/travis_gdal_install.sh
-          gdal-config --version
+  test:
+    name: Run the test suite
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        python-version: ["3.9", "3.10"]
 
-      - name: Install Python dependencies
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Get pip cache dir
+        id: pip-cache
         run: |
-          python -m pip install -U pip
-          python -m pip install -U wheel
+          echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
+          restore-keys: |
+            ${{ matrix.python-version }}-v1-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
           python -m pip install -e .[test]
-          python -m pip install GDAL==${{ matrix.GDALVERSION }}
 
-      - name: Print Environment
-        continue-on-error: ${{ matrix.allow_failure == 'true' }}
+      - name: Install GDAL
         run: |
-          echo "python -m pip freeze"
-          python -m pip freeze
+          sudo add-apt-repository ppa:ubuntugis/ppa
+          sudo apt-get update
+          sudo apt-get install gdal-bin libgdal-dev
+          read GDAL_VERSION <<< $(gdal-config --version)
+          echo ${{ GDAL_VERSION }}
+          python -m pip install GDAL==${{ GDAL_VERSION }}
 
-      - name: pytest
-        continue-on-error: ${{ matrix.allow_failure == 'true' }}
+      - name: Test
+        run: pytest
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-data
+          path: ".coverage.*"
+
+  coverage:
+    name: Collect and report coverage
+    runs-on: "ubuntu-latest"
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          # Use latest, so it understands all syntax.
+          python-version: "3.10"
+
+      - run: python -m pip install --upgrade coverage
+
+      - name: Download coverage data.
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-data
+
+      - name: Combine coverage & check percentage
         run: |
-          GDAL_ENABLE_DEPRECATED_DRIVER_GTM=YES python -m pytest -m "not wheel or gdal" --cov fiona --cov-report term-missing
+          python -m coverage combine
+          python -m coverage html
+          python -m coverage report
+          python -m coverage xml
 
-      - name: Coveralls
-        continue-on-error: ${{ matrix.allow_failure == 'true' }}
-        run: coveralls || echo "!! intermittent coveralls failure"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload HTML report if check failed.
+        uses: actions/upload-artifact@v2
+        with:
+          name: html-report
+          path: htmlcov
+        if: ${{ failure() }}
+
+      - name: Upload XML report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage.xml
+          path: coverage.xml
+
+  codecov:
+    name: Upload coverage status to codecov.io
+    runs-on: ubuntu-latest
+    needs: [coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Download coverage data.
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage.xml
+          verbose: true
+
+  build:
+    name: Build Python 🐍 distributions 📦
+    needs: [coverage]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
+          restore-keys: |
+            ${{ matrix.python-version }}-v1-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade tox
+
+      - name: Build a binary wheel and a source tarball
+        run: tox -e build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: "dist/*"
+
+  publish:
+    name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    if: startsWith(github.ref, 'refs/tags')
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Download distributions
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          verify_metadata: false
+          skip_existing: true
+          verbose: true
+          print_hash: true
+
+      - name: Publish distribution 📦 to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          verify_metadata: false
+          verbose: true
+          print_hash: true
