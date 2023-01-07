@@ -1,17 +1,17 @@
 Centerline
 ==========
 
-.. image:: https://travis-ci.org/fitodic/centerline.svg?branch=master
-    :target: https://travis-ci.org/fitodic/centerline
-    :alt: Build
+.. image:: https://github.com/fitodic/centerline/actions/workflows/ci.yml/badge.svg?event=push
+    :target: https://github.com/fitodic/centerline/actions
+    :alt: Build status
+
+.. image:: https://codecov.io/gh/fitodic/centerline/branch/master/graph/badge.svg?token=S2WQ9OTR9O
+    :target: https://codecov.io/gh/fitodic/centerline
+    :alt: Test coverage status
 
 .. image:: https://readthedocs.org/projects/centerline/badge/?version=latest
     :target: http://centerline.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-
-.. image:: https://coveralls.io/repos/github/fitodic/centerline/badge.svg?branch=master
-    :target: https://coveralls.io/github/fitodic/centerline?branch=master
-    :alt: Coverage
 
 .. image:: https://img.shields.io/pypi/v/centerline.svg
     :target: https://pypi.python.org/pypi/centerline

@@ -90,7 +90,7 @@ def create_centerlines(src, dst, interpolation_distance=0.5):
                         continue
 
                     centerline_dict = {
-                        "geometry": mapping(centerline_obj),
+                        "geometry": mapping(centerline_obj.geometry),
                         "properties": {
                             k: v
                             for k, v in centerline_obj.__dict__.items()
