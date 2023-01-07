@@ -3,7 +3,7 @@ requires = ["setuptools>=40.7.0", "wheel>=0.31.1"]
 
 [tool.black]
 line-length = 79
-target-version = ['py37']
+target-version = ['py310']
 include = '\.pyi?$'
 exclude = '''
 (
