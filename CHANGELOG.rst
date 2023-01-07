@@ -8,6 +8,22 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v0.6.4 (2023-01-07)
+-------------------
+
+Features
+^^^^^^^^
+
+- Add support for Shapely 2 (`#30 <https://github.com/fitodic/centerline/pull/30>`_)
+
+
+Deprecations and Removals
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- * The `Centerline` class will no longer extend the Shapely's `MultiLineString` because `Centerline` sets custom attributes which will be prohibited starting from Shapely 2.0. You can use `centerline.geometry` instead of `centerline` wherever you need access to the object's geometry.
+  * Drop Python 2.7 support (`#30 <https://github.com/fitodic/centerline/pull/30>`_)
+
+
 0.6.4 (2022-09-17)
 -------------------
 
