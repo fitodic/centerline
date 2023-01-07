@@ -1,50 +1,11 @@
-name: CI
-# Copied from https://github.com/Toblerity/Fiona/blob/master/.github/workflows/ci_linux.yml
+name: Linux CI
 
 on: [push, pull_request]
 
 jobs:
-  lint:
-    name: Run the linters
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
-          restore-keys: |
-            ${{ matrix.python-version }}-v1-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade tox
-      - name: Test with tox
-        run: |
-          tox -e lint
-          tox -e manifest
-          tox -e changelog -- --draft
-
-
   build:
-    name: Python ${{ matrix.python }} / GDAL ${{ matrix.GDALVERSION }}
-    runs-on: ubuntu-latest
+    name: Python ${{ matrix.python }} / GDAL ${{ matrix.GDALVERSION }} / PROJ ${{ matrix.PROJVERSION }}
+    runs-on: [ubuntu-18.04]
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       fail-fast: false
@@ -54,31 +15,37 @@ jobs:
           - {
               python: 3.7,
               GDALVERSION: "3.1.4",
+              PROJVERSION: "6.3.2",
               allow_failure: "false",
             }
           - {
               python: 3.7,
               GDALVERSION: "3.2.3",
+              PROJVERSION: "7.2.1",
               allow_failure: "false",
             }
           - {
               python: 3.8,
               GDALVERSION: "3.3.3",
+              PROJVERSION: "7.2.1",
               allow_failure: "false",
             }
           - {
               python: 3.9,
               GDALVERSION: "3.4.3",
+              PROJVERSION: "8.2.1",
               allow_failure: "false",
             }
           - {
               python: "3.10",
               GDALVERSION: "3.5.3",
+              PROJVERSION: "9.0.1",
               allow_failure: "false",
             }
           - {
               python: "3.11",
               GDALVERSION: "3.6.0",
+              PROJVERSION: "9.1.0",
               allow_failure: "false",
             }
 
@@ -86,14 +53,23 @@ jobs:
           - {
               python: "3.11",
               GDALVERSION: "master",
+              PROJVERSION: "9.1.0",
               allow_failure: "true",
             }
 
 
     env:
+      CYTHON_COVERAGE: "true"
+      MAKEFLAGS: "-j 4 -s"
+      CXXFLAGS: "-O0"
+      CFLAGS: "-O0"
+      PROJVERSION: ${{ matrix.PROJVERSION }}
       GDALVERSION: ${{ matrix.GDALVERSION }}
       GDALINST: ${{ github.workspace }}/gdalinstall
       GDALBUILD: ${{ github.workspace }}/gdalbuild
+      PROJINST: ${{ github.workspace }}/gdalinstall
+      PROJBUILD: ${{ github.workspace }}/projbuild
+      FILEGDB: ${{ github.workspace }}/gdalinstall/filegdb
 
       # Emulate travis
       TRAVIS_BUILD_DIR: ${{ github.workspace }}
@@ -112,6 +88,8 @@ jobs:
 
           # Additional env variables
           echo "GDAL_DATA=$GDALINST/gdal-$GDALVERSION/share/gdal" >> $GITHUB_ENV
+          echo "PROJ_DATA=$GDALINST/gdal-$GDALVERSION/share/proj" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$GDALINST/proj-$PROJVERSION/lib:$FILEGDB/lib:\$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
           # Add PATH
           echo "$GDALINST/gdal-$GDALVERSION/bin" >> $GITHUB_PATH
@@ -126,7 +104,7 @@ jobs:
       - name: Install apt packages
         run: |
           sudo apt-get update
-          sudo apt-get install libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev libproj-dev libhdf5-serial-dev libgdal-dev libatlas-base-dev gfortran
+          sudo apt-get install libatlas-base-dev libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev
 
           # Unlike travis, packages from non default repositories are installed.
           # While default repositories e.g. bionic/universe or bionic/main) tend to keep packages at the same API / ABI level,
@@ -140,7 +118,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: gdalinstall
-          key: ${{ runner.os }}-gdal-${{ matrix.GDALVERSION }}-${{ hashFiles('**/apt_list') }}-${{ hashFiles('scripts/travis_gdal_install.sh') }}
+          key: ${{ runner.os }}-gdal-${{ matrix.GDALVERSION }}-proj-${{ matrix.PROJVERSION }}-${{ hashFiles('**/apt_list') }}-${{ hashFiles('scripts/travis_gdal_install.sh', 'scripts/travis_proj_install.sh', 'scripts/travis_filegdb_install.sh') }}
 
       - name: Cache pip
         uses: actions/cache@v3
@@ -149,6 +127,14 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+
+      - name: Build PROJ
+        run: |
+          chmod +x scripts/travis_proj_install.sh && ./scripts/travis_proj_install.sh
+
+      - name: Install FileGDB
+        run: |
+          chmod +x scripts/travis_filegdb_install.sh && ./scripts/travis_filegdb_install.sh
 
       - name: Build GDAL
         continue-on-error: ${{ matrix.allow_failure == 'true' }}
@@ -159,8 +145,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install -U pip
+          python -m pip install -U wheel
           python -m pip install -e .[test]
-          python -m pip install GDAL-${{ matrix.GDALVERSION }}
+          python -m pip install GDAL==${{ matrix.GDALVERSION }}
 
       - name: Print Environment
         continue-on-error: ${{ matrix.allow_failure == 'true' }}
