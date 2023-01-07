@@ -126,7 +126,7 @@ jobs:
       - name: Install apt packages
         run: |
           sudo apt-get update
-          sudo apt-get install libatlas-base-dev libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev libproj-dev
+          sudo apt-get install libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev libproj-dev libhdf5-serial-dev libpng12-dev libgdal-dev libatlas-dev libatlas-base-dev gfortran
 
           # Unlike travis, packages from non default repositories are installed.
           # While default repositories e.g. bionic/universe or bionic/main) tend to keep packages at the same API / ABI level,
