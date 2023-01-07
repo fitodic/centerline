@@ -209,23 +209,20 @@ fi
 ls -l $GDALINST
 
 if [ "$GDALVERSION" = "master" ]; then
-    PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
     cd $GDALBUILD
     git clone --depth 1 https://github.com/OSGeo/gdal gdal-$GDALVERSION
     cd gdal-$GDALVERSION
-    echo $PROJVERSION > newproj.txt
     git rev-parse HEAD > newrev.txt
     BUILD=no
     # Only build if nothing cached or if the GDAL revision changed
     if test ! -f $GDALINST/gdal-$GDALVERSION/rev.txt; then
         BUILD=yes
-    elif ( ! diff newrev.txt $GDALINST/gdal-$GDALVERSION/rev.txt >/dev/null ) || ( ! diff newproj.txt $GDALINST/gdal-$GDALVERSION/newproj.txt >/dev/null ); then
+    elif ( ! diff newrev.txt $GDALINST/gdal-$GDALVERSION/rev.txt >/dev/null ); then
         BUILD=yes
     fi
     if test "$BUILD" = "yes"; then
         mkdir -p $GDALINST/gdal-$GDALVERSION
         cp newrev.txt $GDALINST/gdal-$GDALVERSION/rev.txt
-        cp newproj.txt $GDALINST/gdal-$GDALVERSION/newproj.txt
         mkdir build
         cd build
         echo "cmake -DCMAKE_INSTALL_PREFIX=$GDALINST/gdal-$GDALVERSION -DPROJ_INCLUDE_DIR=$GDALINST/gdal-$GDALVERSION $GDAL_CMAKE_OPTS -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .."
@@ -235,33 +232,14 @@ if [ "$GDALVERSION" = "master" ]; then
     fi
 
 else
-
-    case "$GDALVERSION" in
-        3*)
-            PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
-            ;;
-        2.4*)
-            PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
-            ;;
-        2.3*)
-            PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
-            ;;
-        *)
-            PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
-            ;;
-        *)
-            PROJOPT="--with-proj=$GDALINST/gdal-$GDALVERSION"
-            ;;
-    esac
-
     if [ ! -d "$GDALINST/gdal-$GDALVERSION/share/gdal" ]; then
         cd $GDALBUILD
         gdalver=$(expr "$GDALVERSION" : '\([0-9]*.[0-9]*.[0-9]*\)')
         wget -q https://download.osgeo.org/gdal/$gdalver/gdal-$GDALVERSION.tar.gz
         tar -xzf gdal-$GDALVERSION.tar.gz
         cd gdal-$gdalver
-        echo "./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS $PROJOPT"
-        ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS $PROJOPT
+        echo "./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS"
+        ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS
         make
         make install
         if [ -f "CMakeLists.txt" ]; then
@@ -272,7 +250,7 @@ else
             cmake --build .
             cmake --build . --target install
         else
-            ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS $PROJOPT
+            ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS
             make
             make install
         fi
