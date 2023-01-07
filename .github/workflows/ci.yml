@@ -126,7 +126,7 @@ jobs:
       - name: Install apt packages
         run: |
           sudo apt-get update
-          sudo apt-get install libatlas-base-dev libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev
+          sudo apt-get install libatlas-base-dev libcurl4-openssl-dev libgeos-dev libfreexl-dev libzstd-dev libspatialite-dev libproj-dev
 
           # Unlike travis, packages from non default repositories are installed.
           # While default repositories e.g. bionic/universe or bionic/main) tend to keep packages at the same API / ABI level,
@@ -140,7 +140,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: gdalinstall
-          key: ${{ runner.os }}-gdal-${{ matrix.GDALVERSION }}-${{ hashFiles('**/apt_list') }}-${{ hashFiles('scripts/travis_gdal_install.sh', 'scripts/travis_proj_install.sh', 'scripts/travis_filegdb_install.sh') }}
+          key: ${{ runner.os }}-gdal-${{ matrix.GDALVERSION }}-${{ hashFiles('**/apt_list') }}-${{ hashFiles('scripts/travis_gdal_install.sh') }}
 
       - name: Cache pip
         uses: actions/cache@v3
