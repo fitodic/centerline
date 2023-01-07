@@ -92,8 +92,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install gdal-bin libgdal-dev
           read GDAL_VERSION <<< $(gdal-config --version)
-          echo ${{ GDAL_VERSION }}
-          python -m pip install GDAL==${{ GDAL_VERSION }}
+          echo $GDAL_VERSION
+          python -m pip install GDAL==$GDAL_VERSION
 
       - name: Test
         run: pytest
