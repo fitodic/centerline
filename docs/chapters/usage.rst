@@ -29,5 +29,5 @@ If you want to use the ``Centerline`` class directly, you can import it and inst
     True
     >>> centerline.name
     'polygon'
-    >>> centerline.geoms
+    >>> centerline.geometry.geoms
     <shapely.geometry.base.GeometrySequence object at 0x7f7d24116210>
