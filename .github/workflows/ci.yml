@@ -50,6 +50,8 @@ jobs:
           tox -e lint
           tox -e manifest
           tox -e changelog -- --draft
+          tox -e docs
+          tox -e pypi-description
 
   test:
     name: Run the test suite
@@ -58,7 +60,7 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
       - uses: actions/checkout@v2
