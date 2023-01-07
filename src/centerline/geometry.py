@@ -125,7 +125,7 @@ class Centerline:
 
     def _extract_polygons_from_input_geometry(self):
         if isinstance(self._input_geometry, MultiPolygon):
-            return (polygon for polygon in self._input_geometry)
+            return (polygon for polygon in self._input_geometry.geoms)
         else:
             return (self._input_geometry,)
 
