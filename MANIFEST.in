@@ -7,7 +7,5 @@ recursive-exclude docs/_build *
 recursive-include tests *
 recursive-exclude tests/__pycache__ *
 
-recursive-exclude scripts *
-
 prune .travis
 prune changelog.d

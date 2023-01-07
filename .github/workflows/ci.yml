@@ -96,7 +96,7 @@ jobs:
           python -m pip install GDAL==$GDAL_VERSION
 
       - name: Test
-        run: pytest
+        run: coverage run -m pytest
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v2
