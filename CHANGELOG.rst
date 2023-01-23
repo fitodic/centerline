@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v1.0.0 (2023-01-23)
+-------------------
+
+Misc
+^^^^
+
+- Restore Python 3.7+ support and update metadata. (`#39 <https://github.com/fitodic/centerline/pull/39>`_)
+
+
 1.0.0 (2023-01-07)
 -------------------
 
