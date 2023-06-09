@@ -29,10 +29,13 @@ class Centerline:
     """
 
     def __init__(
-        self, input_geometry, interpolation_distance=0.5, **attributes
+        self, input_geometry, interpolation_distance=None, **attributes
     ):
         self._input_geometry = input_geometry
-        self._interpolation_distance = abs(interpolation_distance)
+        if interpolation_distance is None:                            
+            self._interpolation_distance = None                       
+        else:                                                         
+            self._interpolation_distance = abs(interpolation_distance)
 
         if not self.input_geometry_is_valid():
             raise exceptions.InvalidInputTypeError
@@ -133,16 +136,15 @@ class Centerline:
         return len(polygon.interiors) > 0
 
     def _get_interpolated_boundary(self, boundary):
-        line = LineString(boundary)
-
+        if self._interpolation_distance is None:
+            return [self._create_point_with_reduced_coordinates(x, y) for x, y in zip(boundary.xy[0], boundary.xy[1])]
+        line = LineString(boundary)                                                                  
         first_point = self._get_coordinates_of_first_point(line)
         last_point = self._get_coordinates_of_last_point(line)
-
         intermediate_points = self._get_coordinates_of_interpolated_points(
-            line
-        )
-
-        return [first_point] + intermediate_points + [last_point]
+            line                                       
+        )                                                                                                  
+        return [first_point] + intermediate_points + [last_point]                                                 
 
     def _get_coordinates_of_first_point(self, linestring):
         return self._create_point_with_reduced_coordinates(
