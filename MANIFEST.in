@@ -1,4 +1,4 @@
-include *.md *.rst *.toml *.yml LICENSE MANIFEST.in tox.ini
+include *.md *.rst *.toml *.yml LICENSE MANIFEST.in tox.ini CITATION.cff
 exclude .bumpversion.cfg
 
 recursive-include docs *
