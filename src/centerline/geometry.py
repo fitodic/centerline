@@ -87,7 +87,7 @@ class Centerline:
 
         str_tree = STRtree(linestrings)
         linestrings_indexes = str_tree.query(self._input_geometry, 'contains')
-        contained_linestrings = [linestrings[i] for i in linestring_indexes]
+        contained_linestrings = [linestrings[i] for i in linestrings_indexes]
         if len(contained_linestrings) < 2:
             raise exceptions.TooFewRidgesError
 
