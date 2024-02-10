@@ -6,6 +6,7 @@ from numpy import array
 from scipy.spatial import Voronoi
 from shapely.geometry import LineString, MultiLineString, MultiPolygon, Polygon
 from shapely.ops import unary_union
+from shapely.strtree import STRtree
 
 from . import exceptions
 
@@ -82,14 +83,15 @@ class Centerline:
                     x=vertices[ridge[1]][0], y=vertices[ridge[1]][1]
                 )
                 linestring = LineString((starting_point, ending_point))
+                linestrings.append(linestring)
 
-                if self._linestring_is_within_input_geometry(linestring):
-                    linestrings.append(linestring)
-
-        if len(linestrings) < 2:
+        str_tree = STRtree(linestrings)
+        linestrings_indexes = str_tree.query(self._input_geometry, "contains")
+        contained_linestrings = [linestrings[i] for i in linestrings_indexes]
+        if len(contained_linestrings) < 2:
             raise exceptions.TooFewRidgesError
 
-        return unary_union(linestrings)
+        return unary_union(contained_linestrings)
 
     def _get_voronoi_vertices_and_ridges(self):
         borders = self._get_densified_borders()
