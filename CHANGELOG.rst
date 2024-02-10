@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v1.0.1 (2024-02-10)
+-------------------
+
+Features
+^^^^^^^^
+
+- Convert the centerline within check to use Shapely STRTrees (`#44 <https://github.com/fitodic/centerline/pull/44>`_)
+
+
 1.0.1 (2023-01-23)
 -------------------
 
