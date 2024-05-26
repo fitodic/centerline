@@ -1,1 +1,0 @@
-Adding `predicate` as a named parameter in `str_tree.query`

@@ -8,6 +8,15 @@ Changes for the upcoming release can be found in the `changelog.d` directory in 
 
 .. towncrier release notes start
 
+v1.1.0 (2024-05-26)
+-------------------
+
+Bugfixes
+^^^^^^^^
+
+- Adding `predicate` as a named parameter in `str_tree.query` (`#47 <https://github.com/fitodic/centerline/pull/47>`_)
+
+
 1.1.0 (2024-02-10)
 -------------------
 
