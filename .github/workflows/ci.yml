@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v2
@@ -101,10 +101,12 @@ jobs:
         run: coverage run -m pytest
 
       - name: Upload coverage data
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage-data
-          path: ".coverage.*"
+          name: coverage-data-${{ matrix.python-version }}
+          path: .coverage.*
+          include-hidden-files: true
+          if-no-files-found: ignore
 
   coverage:
     name: Collect and report coverage
@@ -120,9 +122,10 @@ jobs:
       - run: python -m pip install --upgrade coverage
 
       - name: Download coverage data.
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
-          name: coverage-data
+          pattern: coverage-data-*
+          merge-multiple: true
 
       - name: Combine coverage & check percentage
         run: |
@@ -132,14 +135,14 @@ jobs:
           python -m coverage xml
 
       - name: Upload HTML report if check failed.
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
 
       - name: Upload XML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: coverage.xml
           path: coverage.xml
@@ -156,7 +159,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Download coverage data.
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: coverage.xml
       - name: Upload coverage to Codecov
@@ -199,7 +202,7 @@ jobs:
         run: tox -e build
 
       - name: Upload distributions
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: "dist/*"
@@ -212,7 +215,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Download distributions
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
