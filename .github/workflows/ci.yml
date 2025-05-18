@@ -1,99 +1,99 @@
 name: CI/CD
 
 on:
-  push:
-    branches:
-      - "master"
-    tags:
-      - "*"
-  pull_request:
-    branches:
-      - "*"
-  schedule:
-    # Run weekly on Saturday
-    - cron: "37 3 * * SAT"
+push:
+branches:
+- "master"
+tags:
+- "*"
+pull_request:
+branches:
+- "*"
+schedule:
+# Run weekly on Saturday
+- cron: "37 3 * * SAT"
 
 jobs:
-  lint:
-    name: Run the linters
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.12"]
+lint:
+name: Run the linters
+runs-on: ubuntu-latest
+strategy:
+fail-fast: false
+matrix:
+python-version: ["3.12"]
 
-    steps:
-      - uses: actions/checkout@v4.2.2
+steps:
+- uses: actions/checkout@v4.2.2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5.6.0
-        with:
-          python-version: ${{ matrix.python-version }}
+- name: Set up Python ${{ matrix.python-version }}
+uses: actions/setup-python@v5.6.0
+with:
+python-version: ${{ matrix.python-version }}
 
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: Cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
-          restore-keys: |
-            ${{ matrix.python-version }}-v1-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade tox
-      - name: Test with tox
-        run: |
-          tox -e lint
-          tox -e manifest
-          tox -e changelog -- --draft
-          tox -e docs
-          tox -e pypi-description
+- name: Get pip cache dir
+id: pip-cache
+run: |
+echo "::set-output name=dir::$(pip cache dir)"
+- name: Cache
+uses: actions/cache@v4.2.3
+with:
+path: ${{ steps.pip-cache.outputs.dir }}
+key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
+restore-keys: |
+${{ matrix.python-version }}-v1-
+- name: Install dependencies
+run: |
+python -m pip install --upgrade pip
+python -m pip install --upgrade tox
+- name: Test with tox
+run: |
+tox -e lint
+tox -e manifest
+tox -e changelog -- --draft
+tox -e docs
+tox -e pypi-description
 
-  test:
-    name: Run the test suite
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+test:
+name: Run the test suite
+runs-on: ubuntu-latest
+strategy:
+fail-fast: false
+max-parallel: 5
+matrix:
+python-version: ["3.11", "3.12", "3.13"]
 
-    steps:
-      - uses: actions/checkout@v4.2.2
+steps:
+- uses: actions/checkout@v4.2.2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5.6.0
-        with:
-          python-version: ${{ matrix.python-version }}
+- name: Set up Python ${{ matrix.python-version }}
+uses: actions/setup-python@v5.6.0
+with:
+python-version: ${{ matrix.python-version }}
 
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
+- name: Get pip cache dir
+id: pip-cache
+run: |
+echo "::set-output name=dir::$(pip cache dir)"
 
-      - name: Cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
-          restore-keys: |
-            ${{ matrix.python-version }}-v1-
+- name: Cache
+uses: actions/cache@v4.2.3
+with:
+path: ${{ steps.pip-cache.outputs.dir }}
+key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
+restore-keys: |
+${{ matrix.python-version }}-v1-
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .[test]
+- name: Install dependencies
+run: |
+python -m pip install --upgrade pip
+python -m pip install -e .[test]
 
-      - name: Install GDAL
-        run: |
-          sudo add-apt-repository ppa:ubuntugis/ppa
-          sudo apt-get update
-          sudo apt-get install gdal-bin libgdal-dev
-          read GDAL_VERSION <<< $(gdal-config --version)
+- name: Install GDAL
+run: |
+sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install gdal-bin libgdal-dev
+read GDAL_VERSION <<< $(gdal-config --version)
           echo $GDAL_VERSION
           python -m pip install GDAL==$GDAL_VERSION
 
@@ -182,59 +182,58 @@ jobs:
 
       - name: Get pip cache dir
         id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
+        run: echo "dir::$(pip cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
-          restore-keys: |
-            ${{ matrix.python-version }}-v1-
+  - name: Cache
+  uses: actions/cache@v4.2.3
+  with:
+  path: ${{ steps.pip-cache.outputs.dir }}
+  key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
+  restore-keys: |
+  ${{ matrix.python-version }}-v1-
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade tox
+  - name: Install dependencies
+  run: |
+  python -m pip install --upgrade pip
+  python -m pip install --upgrade tox
 
-      - name: Build a binary wheel and a source tarball
-        run: tox -e build
+  - name: Build a binary wheel and a source tarball
+  run: tox -e build
 
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: dist
-          path: "dist/*"
+  - name: Upload distributions
+  uses: actions/upload-artifact@v4.6.2
+  with:
+  name: dist
+  path: "dist/*"
 
   publish:
-    name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
-    if: startsWith(github.ref, 'refs/tags')
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.2.2
-      - name: Download distributions
-        uses: actions/download-artifact@v4.3.0
-        with:
-          name: dist
-          path: dist/
+  name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+  if: startsWith(github.ref, 'refs/tags')
+  needs: [build]
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/checkout@v4.2.2
+  - name: Download distributions
+  uses: actions/download-artifact@v4.3.0
+  with:
+  name: dist
+  path: dist/
 
-      - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.4
-        with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-          verify_metadata: false
-          skip_existing: true
-          verbose: true
-          print_hash: true
+  - name: Publish distribution 📦 to Test PyPI
+  uses: pypa/gh-action-pypi-publish@v1.12.4
+  with:
+  password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+  repository_url: https://test.pypi.org/legacy/
+  verify_metadata: false
+  skip_existing: true
+  verbose: true
+  print_hash: true
 
-      - name: Publish distribution 📦 to PyPI
-        if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@v1.12.4
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          verify_metadata: false
-          verbose: true
-          print_hash: true
+  - name: Publish distribution 📦 to PyPI
+  if: startsWith(github.ref, 'refs/tags')
+  uses: pypa/gh-action-pypi-publish@v1.12.4
+  with:
+  password: ${{ secrets.PYPI_API_TOKEN }}
+  verify_metadata: false
+  verbose: true
+  print_hash: true
