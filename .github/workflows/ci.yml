@@ -116,7 +116,7 @@ jobs:
       - uses: actions/setup-python@v5.6.0
         with:
           # Use latest, so it understands all syntax.
-          python-version: "3.10"
+          python-version: "3.13"
 
       - run: python -m pip install --upgrade coverage
 
@@ -172,16 +172,16 @@ jobs:
     needs: [coverage]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v5.6.0
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Get pip cache dir
         id: pip-cache
-        run: echo "dir::$(pip cache dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache
         uses: actions/cache@v4.2.3
