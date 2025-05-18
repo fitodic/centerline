@@ -23,10 +23,10 @@ jobs:
         python-version: ["3.12"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.2.2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4.2.3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
@@ -60,13 +60,13 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.2.2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -76,7 +76,7 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
 
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4.2.3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
@@ -90,7 +90,6 @@ jobs:
 
       - name: Install GDAL
         run: |
-          sudo add-apt-repository ppa:ubuntugis/ppa
           sudo apt-get update
           sudo apt-get install gdal-bin libgdal-dev
           read GDAL_VERSION <<< $(gdal-config --version)
@@ -101,7 +100,7 @@ jobs:
         run: coverage run -m pytest
 
       - name: Upload coverage data
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: coverage-data-${{ matrix.python-version }}
           path: .coverage.*
@@ -113,16 +112,16 @@ jobs:
     runs-on: "ubuntu-latest"
     needs: [test]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.6.0
         with:
           # Use latest, so it understands all syntax.
-          python-version: "3.10"
+          python-version: "3.13"
 
       - run: python -m pip install --upgrade coverage
 
       - name: Download coverage data.
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.3.0
         with:
           pattern: coverage-data-*
           merge-multiple: true
@@ -135,14 +134,14 @@ jobs:
           python -m coverage xml
 
       - name: Upload HTML report if check failed.
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: html-report
           path: htmlcov
         if: ${{ failure() }}
 
       - name: Upload XML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: coverage.xml
           path: coverage.xml
@@ -153,17 +152,17 @@ jobs:
     needs: [coverage]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
       - name: Set up Python 3.10
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "3.10"
       - name: Download coverage data.
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.3.0
         with:
           name: coverage.xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5.4.3
         with:
           files: coverage.xml
           verbose: true
@@ -173,20 +172,19 @@ jobs:
     needs: [coverage]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5.6.0
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Get pip cache dir
         id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
+        run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4.2.3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.python-version }}-v1-${{ hashFiles('**/setup.cfg') }}-${{ hashFiles('**/tox.ini') }}
@@ -202,7 +200,7 @@ jobs:
         run: tox -e build
 
       - name: Upload distributions
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: dist
           path: "dist/*"
@@ -213,15 +211,15 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4.2.2
       - name: Download distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.3.0
         with:
           name: dist
           path: dist/
 
       - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@v1.12.4
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
@@ -232,7 +230,7 @@ jobs:
 
       - name: Publish distribution 📦 to PyPI
         if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@v1.12.4
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           verify_metadata: false
