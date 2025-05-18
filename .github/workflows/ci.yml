@@ -90,7 +90,6 @@ jobs:
 
       - name: Install GDAL
         run: |
-          sudo add-apt-repository ppa:ubuntugis/ppa
           sudo apt-get update
           sudo apt-get install gdal-bin libgdal-dev
           read GDAL_VERSION <<< $(gdal-config --version)
@@ -171,7 +170,7 @@ jobs:
   build:
     name: Build Python 🐍 distributions 📦
     needs: [coverage]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
 
