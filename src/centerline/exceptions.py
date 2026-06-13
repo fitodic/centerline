@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 
 class CenterlineError(Exception):
-    default_message = "An error has occured while constucting the centerline."
+    default_message = "An error has occurred while constructing the centerline."
 
     def __init__(self, *args, **kwargs):  # pragma: no cover
         if not (args or kwargs):
