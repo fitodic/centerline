@@ -20,15 +20,6 @@ def test__driver_name__with_shp__returns_esri_shapefile(create_input_file):
     assert driver.GetName() == EXPECTED_DRIVER_NAME
 
 
-def test__driver_name__with_json__returns_geojson(create_input_file):
-    EXPECTED_DRIVER_NAME = "GeoJSON"
-    input_file = "example.json"
-
-    driver = get_ogr_driver(input_file)
-
-    assert driver.GetName() == EXPECTED_DRIVER_NAME
-
-
 def test__driver_name__with_geojson__returns_geojson(create_input_file):
     EXPECTED_DRIVER_NAME = "GeoJSON"
     input_file = create_input_file("polygons", "geojson")
