@@ -47,13 +47,14 @@ class Centerline:
         """Input geometry is of a :py:class:`shapely.geometry.Polygon`
         or a :py:class:`shapely.geometry.MultiPolygon`.
 
+        An empty geometry has no border to build a centerline from, so
+        it is rejected just like a geometry of the wrong type.
+
         :return: geometry is valid
         :rtype: bool
         """
-        if isinstance(self._input_geometry, Polygon) or isinstance(
-            self._input_geometry, MultiPolygon
-        ):
-            return True
+        if isinstance(self._input_geometry, (Polygon, MultiPolygon)):
+            return not self._input_geometry.is_empty
         else:
             return False
 
