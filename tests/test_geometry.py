@@ -43,6 +43,16 @@ def test_creating_centerline_from_multipoint_raises_typeerror(multipoint):
         Centerline(multipoint)
 
 
+def test_creating_centerline_from_empty_polygon_raises_typeerror():
+    with pytest.raises(InvalidInputTypeError):
+        Centerline(geometry.Polygon())
+
+
+def test_creating_centerline_from_empty_multipolygon_raises_typeerror():
+    with pytest.raises(InvalidInputTypeError):
+        Centerline(geometry.MultiPolygon([]))
+
+
 def test_creating_centerline_from_linestring_raises_typeerror(linestring):
     with pytest.raises(InvalidInputTypeError):
         Centerline(linestring)
